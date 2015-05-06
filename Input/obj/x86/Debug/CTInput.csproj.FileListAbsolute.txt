@@ -1,0 +1,6 @@
+C:\Users\sfranks3\Dropbox\Software\GameDevelopment\Input\Input\bin\x86\Debug\CTInput.dll
+C:\Users\sfranks3\Dropbox\Software\GameDevelopment\Input\Input\bin\x86\Debug\CTInput.pdb
+C:\Users\sfranks3\Dropbox\Software\GameDevelopment\Input\Input\obj\x86\Debug\CTInput.csprojResolveAssemblyReference.cache
+C:\Users\sfranks3\Dropbox\Software\GameDevelopment\Input\Input\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\sfranks3\Dropbox\Software\GameDevelopment\Input\Input\obj\x86\Debug\CTInput.dll
+C:\Users\sfranks3\Dropbox\Software\GameDevelopment\Input\Input\obj\x86\Debug\CTInput.pdb
