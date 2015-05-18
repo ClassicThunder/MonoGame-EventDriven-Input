@@ -3,10 +3,15 @@
 namespace Microsoft.Xna.Framework.Input
 {
     /// <summary>
-    /// An EventArgs type that is used for mouse-based input events in Starbound.UI.
+    /// An EventArgs object that represents mouse events specific to buttons, their presses, clicks, and releases.
     /// </summary>
-    public class MouseEventArgs : InputEventArgs
+    public class SiMouseEventArgs : MouseEventArgs
     {
+        /// <summary>
+        /// Stores the time of the event as a TimeSpan since the game began.
+        /// </summary>
+        public TimeSpan Time { get; set; }
+
         /// <summary>
         /// Gets or sets the previous mouse state for the given event. This is what the mouse looked like
         /// in the previous Update.
@@ -26,8 +31,7 @@ namespace Microsoft.Xna.Framework.Input
         /// <param name="time"></param>
         /// <param name="previous"></param>
         /// <param name="current"></param>
-        public MouseEventArgs(TimeSpan time, MouseState previous, MouseState current)
-            : base(time)
+        public SiMouseEventArgs(TimeSpan time, MouseState previous, MouseState current)
         {
             Previous = previous;
             Current = current;

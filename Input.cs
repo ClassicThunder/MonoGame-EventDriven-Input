@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace CTInput
@@ -6,10 +7,17 @@ namespace CTInput
     public abstract class Input 
     {
         /*####################################################################*/
+        /*                           Input Events                             */
+        /*####################################################################*/
+
+        public abstract void Update(GameTime gameTime);
+
+        /*####################################################################*/
         /*                          Keyboard Events                           */
         /*####################################################################*/
 
         public abstract event EventHandler<KeyboardEventArgs> KeyTyped;
+
         public abstract event EventHandler<KeyboardEventArgs> KeyDown;
         public abstract event EventHandler<KeyboardEventArgs> KeyUp;
 
@@ -22,12 +30,12 @@ namespace CTInput
         public abstract event EventHandler<MouseEventArgs> MouseDragged;
 
         //Buttons
-        public abstract event EventHandler<MouseButtonEventArgs> MouseClick;
-        public abstract event EventHandler<MouseButtonEventArgs> MouseDoubleClick;
-        public abstract event EventHandler<MouseButtonEventArgs> MouseDown;
-        public abstract event EventHandler<MouseButtonEventArgs> MouseUp;             
+        public abstract event EventHandler<MouseEventArgs> MouseClick;
+        public abstract event EventHandler<MouseEventArgs> MouseDoubleClick;
+        public abstract event EventHandler<MouseEventArgs> MouseDown;
+        public abstract event EventHandler<MouseEventArgs> MouseUp;             
 
         //Wheel
-        public abstract event EventHandler<MouseWheelEventArgs> MouseWheel;
+        public abstract event EventHandler<MouseEventArgs> MouseWheel;
     }
 }

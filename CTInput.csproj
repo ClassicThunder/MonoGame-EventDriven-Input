@@ -60,18 +60,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input.cs" />
-    <Compile Include="GenericInput.cs" />
-    <Compile Include="Starbound.Input\InputEventArgs.cs" />
-    <Compile Include="EventArgs\KeyboardEventArgs.cs" />
-    <Compile Include="Starbound.Input\Keyboard\KeyboardEvents.cs" />
-    <Compile Include="Starbound.Input\Keyboard\KeyboardUtil.cs" />
-    <Compile Include="Starbound.Input\Keyboard\Modifiers.cs" />
-    <Compile Include="Starbound.Input\Mouse\MouseButton.cs" />
-    <Compile Include="EventArgs\MouseButtonEventArgs.cs" />
-    <Compile Include="Starbound.Input\Mouse\MouseEventArgs.cs" />
-    <Compile Include="Starbound.Input\Mouse\MouseEvents.cs" />
-    <Compile Include="EventArgs\MouseWheelEventArgs.cs" />
+    <Compile Include="SiInput.cs" />
+    <Compile Include="Shared\EventArgs\KeyboardEventArgs.cs" />
+    <Compile Include="Starbound.Input\EventArgs\SiMouseWheelEventArgs.cs" />
+    <Compile Include="Starbound.Input\EventArgs\SiMouseButtonEventArgs.cs" />
+    <Compile Include="Starbound.Input\EventArgs\SiKeyboardEventArgs.cs" />
+    <Compile Include="Starbound.Input\EventArgs\SiMouseEventArgs.cs" />
+    <Compile Include="Starbound.Input\Keyboard\SiKeyboardEvents.cs" />
+    <Compile Include="Shared\Keyboard\KeyboardUtil.cs" />
+    <Compile Include="Shared\Keyboard\Modifiers.cs" />
+    <Compile Include="Shared\Mouse\MouseButton.cs" />
+    <Compile Include="Shared\EventArgs\MouseEventArgs.cs" />
+    <Compile Include="Starbound.Input\Mouse\SiMouseEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\EventArgs\WCharacterEventArgs.cs" />
+    <Compile Include="Windows\EventArgs\WMouseEventArgs.cs" />
+    <Compile Include="Windows\EventArgs\WKeyEventArgs.cs" />
+    <Compile Include="Windows\InputHook.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

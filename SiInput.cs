@@ -4,21 +4,21 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CTInput
 {
-    public class GenericInput : Input
+    public class SiInput : Input
     {
-        private readonly MouseEvents _mouseEvents;
-        private readonly KeyboardEvents _keyboardEvents;
+        private readonly SiMouseEvents _mouseEvents;
+        private readonly SiKeyboardEvents _siKeyboardEvents;
 
-        public GenericInput() 
+        public SiInput() 
         {
-            _mouseEvents = new MouseEvents();
-            _keyboardEvents = new KeyboardEvents();
+            _mouseEvents = new SiMouseEvents();
+            _siKeyboardEvents = new SiKeyboardEvents();
         }
 
-        public void Update(GameTime gameTime) 
+        override public void Update(GameTime gameTime) 
         {
             _mouseEvents.Update(gameTime);
-            _keyboardEvents.Update(gameTime);
+            _siKeyboardEvents.Update(gameTime);
         }
 
 
@@ -28,20 +28,20 @@ namespace CTInput
 
         public override event EventHandler<KeyboardEventArgs> KeyTyped
         {
-            add { _keyboardEvents.KeyTyped += value; }
-            remove { _keyboardEvents.KeyTyped -= value; }
+            add { _siKeyboardEvents.KeyTyped += value; }
+            remove { _siKeyboardEvents.KeyTyped -= value; }
         }
 
         public override event EventHandler<KeyboardEventArgs> KeyDown
         {
-            add { _keyboardEvents.KeyPressed += value; }
-            remove { _keyboardEvents.KeyPressed -= value; }
+            add { _siKeyboardEvents.KeyPressed += value; }
+            remove { _siKeyboardEvents.KeyPressed -= value; }
         }
 
         public override event EventHandler<KeyboardEventArgs> KeyUp
         {
-            add { _keyboardEvents.KeyReleased += value; }
-            remove { _keyboardEvents.KeyReleased -= value; }
+            add { _siKeyboardEvents.KeyReleased += value; }
+            remove { _siKeyboardEvents.KeyReleased -= value; }
         }
 
 
@@ -63,32 +63,32 @@ namespace CTInput
         }
 
         //Buttons
-        public override event EventHandler<MouseButtonEventArgs> MouseClick
+        public override event EventHandler<MouseEventArgs> MouseClick
         {
             add { _mouseEvents.ButtonClicked += value; }
             remove { _mouseEvents.ButtonClicked -= value; }
         }
 
-        public override event EventHandler<MouseButtonEventArgs> MouseDoubleClick
+        public override event EventHandler<MouseEventArgs> MouseDoubleClick
         {
             add { _mouseEvents.ButtonDoubleClicked += value; }
             remove { _mouseEvents.ButtonDoubleClicked -= value; }
         }
 
-        public override event EventHandler<MouseButtonEventArgs> MouseDown
+        public override event EventHandler<MouseEventArgs> MouseDown
         {
             add { _mouseEvents.ButtonPressed += value; }
             remove { _mouseEvents.ButtonPressed -= value; }
         }
 
-        public override event EventHandler<MouseButtonEventArgs> MouseUp
+        public override event EventHandler<MouseEventArgs> MouseUp
         {
             add { _mouseEvents.ButtonReleased += value; }
             remove { _mouseEvents.ButtonReleased -= value; }
         }                
 
         //Wheel
-        public override event EventHandler<MouseWheelEventArgs> MouseWheel
+        public override event EventHandler<MouseEventArgs> MouseWheel
         {
             add { _mouseEvents.MouseWheelMoved += value; }
             remove { _mouseEvents.MouseWheelMoved -= value; }

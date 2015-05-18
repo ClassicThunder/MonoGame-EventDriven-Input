@@ -6,7 +6,7 @@ namespace Microsoft.Xna.Framework.Input
     /// An abstraction around keyboard input that turns XNA's underlying polling model into an event-based
     /// model for keyboard input.
     /// </summary>
-    public class KeyboardEvents
+    public class SiKeyboardEvents
     {
         /// <summary>
         /// Represents the amount of time between a key being pressed, and the time that key typed events
@@ -45,9 +45,9 @@ namespace Microsoft.Xna.Framework.Input
         private bool _isInitial;
 
         /// <summary>
-        /// Creates a new KeyboardEvents object.
+        /// Creates a new SIKeyboardEvents object.
         /// </summary>
-        public KeyboardEvents()
+        public SiKeyboardEvents()
         {
             InitialDelay = 800;
             RepeatDelay = 50;
@@ -64,17 +64,26 @@ namespace Microsoft.Xna.Framework.Input
 
             // Build the modifiers that currently apply to the current situation.
             var modifiers = Modifiers.None;
-            if (current.IsKeyDown(Keys.LeftControl) || current.IsKeyDown(Keys.RightControl)) { modifiers |= Modifiers.Control; }
-            if (current.IsKeyDown(Keys.LeftShift) || current.IsKeyDown(Keys.RightShift)) { modifiers |= Modifiers.Shift; }
-            if (current.IsKeyDown(Keys.LeftAlt) || current.IsKeyDown(Keys.RightAlt)) { modifiers |= Modifiers.Alt; }
+            if (current.IsKeyDown(Keys.LeftControl) || current.IsKeyDown(Keys.RightControl)) 
+            {
+                modifiers |= Modifiers.Control;
+            }
+            if (current.IsKeyDown(Keys.LeftShift) || current.IsKeyDown(Keys.RightShift)) 
+            {
+                modifiers |= Modifiers.Shift;
+            }
+            if (current.IsKeyDown(Keys.LeftAlt) || current.IsKeyDown(Keys.RightAlt)) 
+            {
+                modifiers |= Modifiers.Alt;
+            }
             
             // Key pressed and initial key typed events for all keys.
             foreach (Keys key in Enum.GetValues(typeof(Keys)))
             {
                 if (current.IsKeyDown(key) && _previous.IsKeyUp(key))
                 {
-                    OnKeyPressed(this, new KeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
-                    OnKeyTyped(this, new KeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
+                    OnKeyPressed(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
+                    OnKeyTyped(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
 
                     // Maintain the state of last key pressed.
                     _lastKey = key;
@@ -86,7 +95,10 @@ namespace Microsoft.Xna.Framework.Input
             // Key released events for all keys.
             foreach (Keys key in Enum.GetValues(typeof(Keys)))
             {
-                if (current.IsKeyUp(key) && _previous.IsKeyDown(key)) { OnKeyReleased(this, new KeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current)); }
+                if (current.IsKeyUp(key) && _previous.IsKeyDown(key)) 
+                {
+                    OnKeyReleased(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
+                }
             }
 
             // Handle keys being held down and getting multiple KeyTyped events in sequence.
@@ -94,7 +106,7 @@ namespace Microsoft.Xna.Framework.Input
 
             if (current.IsKeyDown(_lastKey) && ((_isInitial && elapsedTime > InitialDelay) || (!_isInitial && elapsedTime > RepeatDelay)))
             {
-                OnKeyTyped(this, new KeyboardEventArgs(gameTime.TotalGameTime, _lastKey, modifiers, current));
+                OnKeyTyped(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, _lastKey, modifiers, current));
                 _lastPress = gameTime.TotalGameTime;
                 _isInitial = false;
             }
@@ -106,27 +118,36 @@ namespace Microsoft.Xna.Framework.Input
         /// Raises the KeyPressed event. This is done automatically by a correctly configured component,
         /// but this is exposed publicly to allow programmatic key press events to occur.
         /// </summary>
-        public void OnKeyPressed(object sender, KeyboardEventArgs args)
+        private void OnKeyPressed(object sender, KeyboardEventArgs args)
         {
-            if (KeyPressed != null) { KeyPressed(sender, args); }
+            if (KeyPressed != null) 
+            {
+                KeyPressed(sender, args);
+            }
         }
 
         /// <summary>
         /// Raises the KeyReleased event. This is done automatically by a correctly configured component,
         /// but this is exposed publicly to allow programmatic key release events to occur.
         /// </summary>
-        public void OnKeyReleased(object sender, KeyboardEventArgs args)
+        private void OnKeyReleased(object sender, KeyboardEventArgs args)
         {
-            if (KeyReleased != null) { KeyReleased(sender, args); }
+            if (KeyReleased != null) 
+            {
+                KeyReleased(sender, args);
+            }
         }
 
         /// <summary>
         /// Raises the KeyTyped event. This is done automatically by a correctly configured component,
         /// but this is exposed publicly to allow programmatic key typed events to occur.
         /// </summary>
-        public void OnKeyTyped(object sender, KeyboardEventArgs args)
+        private void OnKeyTyped(object sender, KeyboardEventArgs args)
         {
-            if (KeyTyped != null) { KeyTyped(sender, args); }
+            if (KeyTyped != null) 
+            {
+                KeyTyped(sender, args);
+            }
         }
 
         /// <summary>
@@ -142,8 +163,8 @@ namespace Microsoft.Xna.Framework.Input
         /// <summary>
         /// An event that is raised when a key is first pressed, and then periodically again afterwards
         /// until the key is released. There is a longer initial delay, determined by 
-        /// KeyboardEvents.InitialDelay, and then subsequent repeats happen at regular intervals as 
-        /// determined by KeyboardEvents.RepeatDelay.
+        /// SIKeyboardEvents.InitialDelay, and then subsequent repeats happen at regular intervals as 
+        /// determined by SIKeyboardEvents.RepeatDelay.
         /// </summary>
         public event EventHandler<KeyboardEventArgs> KeyTyped;
     }

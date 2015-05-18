@@ -6,6 +6,11 @@
     public enum MouseButton
     {
         /// <summary>
+        /// Represents no mouse button being pressed.
+        /// </summary>
+        None,
+
+        /// <summary>
         /// Represents the primary, left mouse button.
         /// </summary>
         Left,
