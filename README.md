@@ -7,7 +7,7 @@ of its derivatives. Where possible it leverages OS and library specific function
 as natural as possible for the user. Ass a result the library should have no input with text entry faster than 
 the polling rate for all other implementations than CIInput.
 
-#### The OS/Framework specific implementations 
+#### The OS/Framework Specific Implementations 
 
 For the final project there will be 4 subclasses that extend the abstract Input class. 
 
