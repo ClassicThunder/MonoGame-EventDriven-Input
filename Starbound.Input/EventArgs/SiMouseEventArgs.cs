@@ -28,11 +28,16 @@ namespace Microsoft.Xna.Framework.Input
         /// Creates a new MouseEventArgs object, based on a time for the event, and the previous and
         /// current mouse states.
         /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         /// <param name="time"></param>
         /// <param name="previous"></param>
-        /// <param name="current"></param>
-        public SiMouseEventArgs(TimeSpan time, MouseState previous, MouseState current)
+        /// <param name="current"></param>        
+        public SiMouseEventArgs(int x, int y, TimeSpan time, MouseState previous, MouseState current) 
         {
+            X = x;
+            Y = y;
+            Time = time;
             Previous = previous;
             Current = current;
         }

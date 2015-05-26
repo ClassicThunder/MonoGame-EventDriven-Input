@@ -7,13 +7,12 @@ namespace Microsoft.Xna.Framework.Input
     /// </summary>
     public class SiMouseWheelEventArgs : SiMouseEventArgs
     {      
-
         /// <summary>
         /// Creates a new MouseWheelEventArgs object given a time, the previous and current mouse states, and
         /// the delta and value of the mouse wheel.
         /// </summary>
-        public SiMouseWheelEventArgs(TimeSpan time, MouseState previous, MouseState current, int delta, int value)
-            : base(time, previous, current) 
+        public SiMouseWheelEventArgs(int x, int y, TimeSpan time, MouseState previous, MouseState current, int delta, int value)
+            : base(x, y, time, previous, current) 
         {
             Button = MouseButton.None;
 

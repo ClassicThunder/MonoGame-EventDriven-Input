@@ -11,8 +11,8 @@ namespace Microsoft.Xna.Framework.Input
         /// Creates a new MouseButtonEventArgs object given a time, the previous and current mouse states, and
         /// the button that the event occurred with.
         /// </summary>
-        public SiMouseButtonEventArgs(TimeSpan time, MouseState previous, MouseState current, MouseButton button)
-            : base(time, previous, current)
+        public SiMouseButtonEventArgs(int x, int y, TimeSpan time, MouseState previous, MouseState current, MouseButton button)
+            : base(x, y, time, previous, current)
         {
             Button = button;
             Delta = null;

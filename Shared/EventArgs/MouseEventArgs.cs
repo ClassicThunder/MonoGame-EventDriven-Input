@@ -5,6 +5,16 @@ namespace Microsoft.Xna.Framework.Input
     public abstract class MouseEventArgs : EventArgs
     {
         /// <summary>
+        /// The X coordinate of the mouse at the time of the event. 
+        /// </summary>
+        public int X { get; set; }
+
+        /// <summary>
+        /// The Y coordinate of the mouse at the time of the event. 
+        /// </summary>
+        public int Y { get; set; }
+
+        /// <summary>
         /// Gets the MouseButton associated with the event. 
         /// </summary>
         public MouseButton Button { get; protected set; }

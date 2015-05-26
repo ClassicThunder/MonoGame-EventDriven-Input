@@ -59,17 +59,27 @@ namespace Microsoft.Xna.Framework.Input
             _lastClicks = new Dictionary<MouseButton, SiMouseButtonEventArgs>();
             _lastDoubleClicks = new Dictionary<MouseButton, SiMouseButtonEventArgs>();
 
-            _lastClicks.Add(MouseButton.Left, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Left));
-            _lastClicks.Add(MouseButton.Right, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Right));
-            _lastClicks.Add(MouseButton.Middle, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Middle));
-            _lastClicks.Add(MouseButton.XButton1, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton1));
-            _lastClicks.Add(MouseButton.XButton2, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton2));
+            _lastClicks.Add(MouseButton.Left, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Left));
+            _lastClicks.Add(MouseButton.Right, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Right));
+            _lastClicks.Add(MouseButton.Middle, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Middle));
+            _lastClicks.Add(MouseButton.XButton1, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton1));
+            _lastClicks.Add(MouseButton.XButton2, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton2));
 
-            _lastDoubleClicks.Add(MouseButton.Left, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Left));
-            _lastDoubleClicks.Add(MouseButton.Right, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Right));
-            _lastDoubleClicks.Add(MouseButton.Middle, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Middle));
-            _lastDoubleClicks.Add(MouseButton.XButton1, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton1));
-            _lastDoubleClicks.Add(MouseButton.XButton2, new SiMouseButtonEventArgs(new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton2));
+            _lastDoubleClicks.Add(MouseButton.Left, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Left));
+            _lastDoubleClicks.Add(MouseButton.Right, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Right));
+            _lastDoubleClicks.Add(MouseButton.Middle, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Middle));
+            _lastDoubleClicks.Add(MouseButton.XButton1, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton1));
+            _lastDoubleClicks.Add(MouseButton.XButton2, new SiMouseButtonEventArgs(
+                -1, -1, new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton2));
         }
 
         /// <summary>
@@ -84,67 +94,82 @@ namespace Microsoft.Xna.Framework.Input
             // Check button press events.
             if (current.LeftButton == ButtonState.Pressed && _previous.LeftButton == ButtonState.Released) 
             {
-                OnButtonPressed(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Left));
+                OnButtonPressed(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Left));
             }
             if (current.MiddleButton == ButtonState.Pressed && _previous.MiddleButton == ButtonState.Released) 
             {
-                OnButtonPressed(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Middle));
+                OnButtonPressed(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Middle));
             }
             if (current.RightButton == ButtonState.Pressed && _previous.RightButton == ButtonState.Released) 
             {
-                OnButtonPressed(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Right));
+                OnButtonPressed(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Right));
             }
             if (current.XButton1 == ButtonState.Pressed && _previous.XButton1 == ButtonState.Released) 
             {
-                OnButtonPressed(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.XButton1));
+                OnButtonPressed(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.XButton1));
             }
             if (current.XButton2 == ButtonState.Pressed && _previous.XButton2 == ButtonState.Released) 
             {
-                OnButtonPressed(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.XButton2));
+                OnButtonPressed(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.XButton2));
             }
 
             // Check button click events.
             if (current.LeftButton == ButtonState.Pressed && _previous.LeftButton == ButtonState.Released) 
             {
-                OnButtonClicked(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Left));
+                OnButtonClicked(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Left));
             }
             if (current.MiddleButton == ButtonState.Pressed && _previous.MiddleButton == ButtonState.Released) 
             {
-                OnButtonClicked(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Middle));
+                OnButtonClicked(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Middle));
             }
             if (current.RightButton == ButtonState.Pressed && _previous.RightButton == ButtonState.Released)
             {
-                OnButtonClicked(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Right));
+                OnButtonClicked(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Right));
             }
             if (current.XButton1 == ButtonState.Pressed && _previous.XButton1 == ButtonState.Released)
             {
-                OnButtonClicked(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.XButton1));
+                OnButtonClicked(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.XButton1));
             }
             if (current.XButton2 == ButtonState.Pressed && _previous.XButton2 == ButtonState.Released) 
             {
-                OnButtonClicked(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.XButton2));
+                OnButtonClicked(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.XButton2));
             }
 
             // Check button releases.
             if (current.LeftButton == ButtonState.Released && _previous.LeftButton == ButtonState.Pressed) 
             {
-                OnButtonReleased(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Left));
+                OnButtonReleased(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Left));
             }
             if (current.MiddleButton == ButtonState.Released && _previous.MiddleButton == ButtonState.Pressed) 
             {
-                OnButtonReleased(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Middle));
+                OnButtonReleased(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Middle));
             }
             if (current.RightButton == ButtonState.Released && _previous.RightButton == ButtonState.Pressed) 
             {
-                OnButtonReleased(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.Right));
+                OnButtonReleased(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.Right));
             }
             if (current.XButton1 == ButtonState.Released && _previous.XButton1 == ButtonState.Pressed) 
             {
-                OnButtonReleased(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.XButton1));
+                OnButtonReleased(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.XButton1));
             }
             if (current.XButton2 == ButtonState.Released && _previous.XButton2 == ButtonState.Pressed) 
             {
-                OnButtonReleased(this, new SiMouseButtonEventArgs(gameTime.TotalGameTime, _previous, current, MouseButton.XButton2));
+                OnButtonReleased(this, new SiMouseButtonEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, MouseButton.XButton2));
             }
 
             // Whether ANY button is pressed.
@@ -160,12 +185,14 @@ namespace Microsoft.Xna.Framework.Input
             {
                 if (buttonDown) 
                 {
-                    OnMouseDragged(this, new SiMouseEventArgs(gameTime.TotalGameTime, _previous, current));
+                    OnMouseDragged(this, new SiMouseEventArgs(
+                        current.X, current.Y, gameTime.TotalGameTime, _previous, current));
                 }
 
                 if (MoveRaisedOnDrag || !buttonDown) 
                 {
-                    OnMouseMoved(this, new SiMouseEventArgs(gameTime.TotalGameTime, _previous, current));
+                    OnMouseMoved(this, new SiMouseEventArgs(
+                        current.X, current.Y, gameTime.TotalGameTime, _previous, current));
                 }
             }
 
@@ -174,7 +201,8 @@ namespace Microsoft.Xna.Framework.Input
             {
                 var value = current.ScrollWheelValue;
                 var delta = current.ScrollWheelValue - _previous.ScrollWheelValue;
-                OnMouseWheelMoved(this, new SiMouseWheelEventArgs(gameTime.TotalGameTime, _previous, current, delta, value));
+                OnMouseWheelMoved(this, new SiMouseWheelEventArgs(
+                    current.X, current.Y, gameTime.TotalGameTime, _previous, current, delta, value));
             }
 
             _previous = current;
