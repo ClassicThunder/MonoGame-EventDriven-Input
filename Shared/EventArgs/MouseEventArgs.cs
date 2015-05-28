@@ -20,7 +20,7 @@ namespace Microsoft.Xna.Framework.Input
         public MouseButton Button { get; protected set; }
 
         /// <summary>
-        /// Gets thwe current wheel position. 
+        /// Gets the current wheel position. 
         /// </summary>
         public int? Value { get; protected set; }
 
@@ -30,6 +30,15 @@ namespace Microsoft.Xna.Framework.Input
         /// assume that all mice use the same amount. Different mice will produce different deltas for 
         /// each notch of the mouse wheel, while others don't have notches, but rather, a continuous rotation.
         /// </summary>
-        public int? Delta { get; protected set; }        
+        public int? Delta { get; protected set; }
+
+        protected internal MouseEventArgs(int x, int y, MouseButton button, int? value, int? delta) 
+        {
+            X = x;
+            Y = y;
+            Button = button;
+            Value = value;
+            Delta = delta;
+        }
     }
 }

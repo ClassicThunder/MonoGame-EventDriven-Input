@@ -18,27 +18,15 @@ namespace Microsoft.Xna.Framework.Input
         public Modifiers Modifiers { get; protected set; }
 
         /// <summary>
-        /// The key that is involved in the event.
-        /// </summary>
-        override public Keys Key { get; set; }
-
-        /// <summary>
-        /// The character that represents the key that is involved in the event.
-        /// This uses KeyboardUtil.ToChar to make the conversion.
-        /// </summary>
-        override public char? Character { get; set; }
-
-        /// <summary>
         /// Creates a new KeyboardEventArgs, given a time for the event, the key that was pressed, and
         /// the modifiers that were applied at the time of the press, as well as the keyboard state at 
         /// the time the event occurred.
         /// </summary>
         public SiKeyboardEventArgs(TimeSpan time, Keys key, Modifiers modifiers, KeyboardState state)
+            : base(key, KeyboardUtil.ToChar(key, modifiers))
         {
-            Character = KeyboardUtil.ToChar(key, modifiers);
             State = state;
             Modifiers = modifiers;
-            Key = key;
         }
     }
 }

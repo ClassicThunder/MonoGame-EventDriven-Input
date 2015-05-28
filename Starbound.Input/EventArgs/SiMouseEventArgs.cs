@@ -10,30 +10,27 @@ namespace Microsoft.Xna.Framework.Input
         /// <summary>
         /// Stores the time of the event as a TimeSpan since the game began.
         /// </summary>
-        public TimeSpan Time { get; set; }
+        public TimeSpan Time { get; private set; }
 
         /// <summary>
         /// Gets or sets the previous mouse state for the given event. This is what the mouse looked like
         /// in the previous Update.
         /// </summary>
-        public MouseState Previous { get; protected set; }
+        public MouseState Previous { get; private set; }
 
         /// <summary>
         /// Gets or sets the current mouse state for the given event. This is what the mouse looked like
         /// at the time the event occurred.
         /// </summary>
-        public MouseState Current { get; protected set; }
+        public MouseState Current { get; private set; }
 
         /// <summary>
         /// Creates a new MouseEventArgs object, based on a time for the event, and the previous and
         /// current mouse states.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="time"></param>
-        /// <param name="previous"></param>
-        /// <param name="current"></param>        
-        public SiMouseEventArgs(int x, int y, TimeSpan time, MouseState previous, MouseState current) 
+        public SiMouseEventArgs(int x, int y, TimeSpan time, MouseState previous, MouseState current, 
+            MouseButton button = MouseButton.None, int? value = null, int? delta = null)
+            : base(x, y, button, value, delta)
         {
             X = x;
             Y = y;

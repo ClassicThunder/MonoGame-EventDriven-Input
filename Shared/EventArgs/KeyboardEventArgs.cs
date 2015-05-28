@@ -4,8 +4,14 @@ namespace Microsoft.Xna.Framework.Input
 {
     public abstract class KeyboardEventArgs : EventArgs
     {
-        abstract public Keys Key { get; set; }
+        public Keys Key { get; set; }
 
-        abstract public char? Character { get; set; }
+        public char? Character { get; set; }
+
+        protected internal KeyboardEventArgs(Keys key, char? character) 
+        {
+            Key = key;
+            Character = character;
+        }
     }
 }

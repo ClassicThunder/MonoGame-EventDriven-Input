@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CTInput
 {
-    public class SiInput : Input
+    public sealed class SiInput : Input
     {
         private readonly SiMouseEvents _mouseEvents;
         private readonly SiKeyboardEvents _siKeyboardEvents;
@@ -26,7 +26,7 @@ namespace CTInput
         /*                          Keyboard Events                           */
         /*####################################################################*/
 
-        public override event EventHandler<KeyboardEventArgs> KeyTyped
+        public override event EventHandler<KeyboardEventArgs> CharacterTyped
         {
             add { _siKeyboardEvents.KeyTyped += value; }
             remove { _siKeyboardEvents.KeyTyped -= value; }
@@ -56,19 +56,7 @@ namespace CTInput
             remove { _mouseEvents.MouseMoved -= value; }
         }
 
-        public override event EventHandler<MouseEventArgs> MouseDragged
-        {
-            add { _mouseEvents.MouseDragged += value; }
-            remove { _mouseEvents.MouseDragged -= value; }
-        }
-
         //Buttons
-        public override event EventHandler<MouseEventArgs> MouseClick
-        {
-            add { _mouseEvents.ButtonClicked += value; }
-            remove { _mouseEvents.ButtonClicked -= value; }
-        }
-
         public override event EventHandler<MouseEventArgs> MouseDoubleClick
         {
             add { _mouseEvents.ButtonDoubleClicked += value; }

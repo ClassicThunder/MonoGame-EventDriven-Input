@@ -59,11 +59,10 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WindowsInput.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="SiInput.cs" />
     <Compile Include="Shared\EventArgs\KeyboardEventArgs.cs" />
-    <Compile Include="Starbound.Input\EventArgs\SiMouseWheelEventArgs.cs" />
-    <Compile Include="Starbound.Input\EventArgs\SiMouseButtonEventArgs.cs" />
     <Compile Include="Starbound.Input\EventArgs\SiKeyboardEventArgs.cs" />
     <Compile Include="Starbound.Input\EventArgs\SiMouseEventArgs.cs" />
     <Compile Include="Starbound.Input\Keyboard\SiKeyboardEvents.cs" />
