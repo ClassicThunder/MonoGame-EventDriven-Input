@@ -30,7 +30,7 @@ of this one is that it uses the native windows settings (double click time, char
 Both MonoGame and FNA have keyboard events for entering characters. These two versions will use CIInput for the mouse 
 and the framework specific functionality for the keyboard input.
 
-#### The Input Root Class 
+#### Available Events
 
 ```C#
   public abstract event EventHandler<KeyboardCharacterEventArgs> CharacterTyped;
