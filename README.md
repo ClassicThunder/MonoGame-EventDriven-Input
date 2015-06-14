@@ -7,6 +7,24 @@ of its derivatives. Where possible it leverages OS and library specific function
 as natural as possible for the user. Ass a result the library should have no input with text entry faster than 
 the polling rate for all other implementations than CIInput.
 
+#### Available Events
+
+```C#
+  public abstract event EventHandler<KeyboardCharacterEventArgs> CharacterTyped;
+  
+  public abstract event EventHandler<KeyboardKeyEventArgs> KeyDown;
+  public abstract event EventHandler<KeyboardKeyEventArgs> KeyUp;
+  
+  public abstract event EventHandler<MouseEventArgs> MouseMoved;
+  
+  public abstract event EventHandler<MouseEventArgs> MouseDoubleClick;
+  
+  public abstract event EventHandler<MouseEventArgs> MouseDown;
+  public abstract event EventHandler<MouseEventArgs> MouseUp;
+  
+  public abstract event EventHandler<MouseEventArgs> MouseWheel;
+```
+
 #### The OS/Framework Specific Implementations 
 
 For the final project there will be 4 subclasses that extend the abstract Input class. 
@@ -29,21 +47,3 @@ of this one is that it uses the native windows settings (double click time, char
 
 Both MonoGame and FNA have keyboard events for entering characters. These two versions will use CIInput for the mouse 
 and the framework specific functionality for the keyboard input.
-
-#### Available Events
-
-```C#
-  public abstract event EventHandler<KeyboardCharacterEventArgs> CharacterTyped;
-  
-  public abstract event EventHandler<KeyboardKeyEventArgs> KeyDown;
-  public abstract event EventHandler<KeyboardKeyEventArgs> KeyUp;
-  
-  public abstract event EventHandler<MouseEventArgs> MouseMoved;
-  
-  public abstract event EventHandler<MouseEventArgs> MouseDoubleClick;
-  
-  public abstract event EventHandler<MouseEventArgs> MouseDown;
-  public abstract event EventHandler<MouseEventArgs> MouseUp;
-  
-  public abstract event EventHandler<MouseEventArgs> MouseWheel;
-```
