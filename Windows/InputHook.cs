@@ -3,35 +3,35 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.Xna.Framework.Input
 {
-    public sealed class InputSystem
+    public static class InputSystem
     {
         /*####################################################################*/
         /*                               Events                               */
         /*####################################################################*/
 
         /// Event raised when a character has been entered.          
-        public event EventHandler<KeyboardEventArgs> CharEntered;
+        public static event EventHandler<KeyboardCharacterEventArgs> CharEntered;
 
         /// Event raised when a key has been pressed down. May fire multiple times due to keyboard repeat.           
-        public event EventHandler<KeyboardEventArgs> KeyDown;
+        public static event EventHandler<KeyboardKeyEventArgs> KeyDown;
 
         /// Event raised when a key has been released.
-        public event EventHandler<KeyboardEventArgs> KeyUp;
+        public static event EventHandler<KeyboardKeyEventArgs> KeyUp;
 
         /// Event raised when a mouse button is pressed.
-        public event EventHandler<MouseEventArgs> MouseDown;
+        public static event EventHandler<MouseEventArgs> MouseDown;
 
         /// Event raised when a mouse button is released.    
-        public event EventHandler<MouseEventArgs> MouseUp;
+        public static event EventHandler<MouseEventArgs> MouseUp;
 
         /// Event raised when the mouse changes location.
-        public event EventHandler<MouseEventArgs> MouseMove;
+        public static event EventHandler<MouseEventArgs> MouseMove;
 
         /// Event raised when the mouse wheel has been moved.        
-        public event EventHandler<MouseEventArgs> MouseWheel;
+        public static event EventHandler<MouseEventArgs> MouseWheel;
 
         /// Event raised when a mouse button has been double clicked.        
-        public event EventHandler<MouseEventArgs> MouseDoubleClick;
+        public static event EventHandler<MouseEventArgs> MouseDoubleClick;
 
         /*####################################################################*/
         /*                       Properties and Constants                     */
@@ -41,10 +41,12 @@ namespace Microsoft.Xna.Framework.Input
 
         private static bool Initialized { get; set; }
 
-        private readonly IntPtr _prevWndProc;
-        private readonly IntPtr _hImc;
+        private static WndProc _hookProcDelegate;
 
-        private int _totalDelta;
+        private static IntPtr _prevWndProc;
+        private static IntPtr _hImc;
+
+        private static int _totalDelta;
         
         const int GwlWndproc = -4;
         const int WmKeyDown = 0x100;
@@ -84,14 +86,10 @@ namespace Microsoft.Xna.Framework.Input
         static extern IntPtr ImmAssociateContext(IntPtr hWnd, IntPtr hIMC);
 
         [DllImport("user32.dll")]
-        static extern IntPtr CallWindowProc(
-            IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-        //[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        //public static extern int GetSystemMetrics(int nIndex);        
 
         /*####################################################################*/
         /*                         Message Translation                        */
@@ -99,22 +97,26 @@ namespace Microsoft.Xna.Framework.Input
 
         /// Initialize the TextInput with the given GameWindow.      
         /// The XNA window to which text input should be linked.
-        internal InputSystem(GameWindow window)
+        internal static void Initialize(GameWindow window)
         {
             if (Initialized) 
             {                    
                 throw new Exception("Only 1 instance of Windows input can be created at a time.");
             }
 
-            WndProc hookProcDelegate = HookProc;
-            _prevWndProc = (IntPtr)SetWindowLong(window.Handle, GwlWndproc,
-                (int)Marshal.GetFunctionPointerForDelegate(hookProcDelegate));
+            _hookProcDelegate = HookProc;
+            _prevWndProc = (IntPtr)SetWindowLong(
+                window.Handle, 
+                GwlWndproc, 
+                (int)Marshal.GetFunctionPointerForDelegate(_hookProcDelegate));
             _hImc = ImmGetContext(window.Handle);
+
+            //LowLevelKeyboardProc 
 
             Initialized = true;
         }
 
-        IntPtr HookProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        private static IntPtr HookProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             var returnCode = CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
 
@@ -125,15 +127,15 @@ namespace Microsoft.Xna.Framework.Input
                     break;
                 case WmKeyDown:
                     if (KeyDown != null)
-                        KeyDown(null, new WKeyEventArgs((Keys)wParam, null));
+                        KeyDown(null, new WKeyEventArgs((Keys)wParam));
                     break;
                 case WmKeyup:
                     if (KeyUp != null)
-                        KeyUp(null, new WKeyEventArgs((Keys)wParam, null));
+                        KeyUp(null, new WKeyEventArgs((Keys)wParam));
                     break;
                 case WmChar:
                     if (CharEntered != null)
-                        CharEntered(null, new WKeyEventArgs(Keys.None, (char)wParam));
+                        CharEntered(null, new WCharacterEventArgs((char)wParam, lParam.ToInt32()));
                     break;
                 case WmImeSetContext:
                     if (wParam.ToInt32() == 1)
@@ -231,7 +233,7 @@ namespace Microsoft.Xna.Framework.Input
         /*                            Raise Events                            */
         /*####################################################################*/
 
-        void RaiseMouseDownEvent(MouseButton button, int wParam, int lParam)
+        private static void RaiseMouseDownEvent(MouseButton button, int wParam, int lParam)
         {
             if (MouseDown == null) { return; }
 
@@ -240,7 +242,7 @@ namespace Microsoft.Xna.Framework.Input
             MouseDown(null, new WMouseEventArgs(x, y, button, 1, null, null));
         }
 
-        void RaiseMouseUpEvent(MouseButton button, int wParam, int lParam)
+        private static void RaiseMouseUpEvent(MouseButton button, int wParam, int lParam)
         {
             if (MouseUp == null) { return; }
 
@@ -249,7 +251,7 @@ namespace Microsoft.Xna.Framework.Input
             MouseUp(null, new WMouseEventArgs(x, y, button, 1, null, null));
         }
 
-        void RaiseMouseDblClickEvent(MouseButton button, int wParam, int lParam)
+        private static void RaiseMouseDblClickEvent(MouseButton button, int wParam, int lParam)
         {
             if (MouseDoubleClick == null) { return; }
 
@@ -258,7 +260,7 @@ namespace Microsoft.Xna.Framework.Input
             MouseDoubleClick(null, new WMouseEventArgs(x, y, button, 1, null, null));
         }
 
-        void MouseLocationFromLParam(int lParam, out short x, out short y)
+        private static void MouseLocationFromLParam(int lParam, out short x, out short y)
         {
             x = (short)(lParam & 0xFFFF);
             y = (short)(lParam >> 16);

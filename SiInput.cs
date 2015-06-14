@@ -9,7 +9,7 @@ namespace CTInput
         private readonly SiMouseEvents _mouseEvents;
         private readonly SiKeyboardEvents _siKeyboardEvents;
 
-        public SiInput() 
+        public SiInput(Game game) : base(game)
         {
             _mouseEvents = new SiMouseEvents();
             _siKeyboardEvents = new SiKeyboardEvents();
@@ -17,7 +17,14 @@ namespace CTInput
 
         override public void Update(GameTime gameTime) 
         {
-            _mouseEvents.Update(gameTime);
+            var location = new Point(
+                Mouse.GetState().X + Game.Window.ClientBounds.X, 
+                Mouse.GetState().Y + Game.Window.ClientBounds.Y);
+            if (Game.Window.ClientBounds.Contains(location)) 
+            {
+                _mouseEvents.Update(gameTime);
+            }
+            
             _siKeyboardEvents.Update(gameTime);
         }
 
@@ -26,19 +33,19 @@ namespace CTInput
         /*                          Keyboard Events                           */
         /*####################################################################*/
 
-        public override event EventHandler<KeyboardEventArgs> CharacterTyped
+        public override event EventHandler<KeyboardCharacterEventArgs> CharacterTyped
         {
-            add { _siKeyboardEvents.KeyTyped += value; }
-            remove { _siKeyboardEvents.KeyTyped -= value; }
+            add { _siKeyboardEvents.CharacterTyped += value; }
+            remove { _siKeyboardEvents.CharacterTyped -= value; }
         }
 
-        public override event EventHandler<KeyboardEventArgs> KeyDown
+        public override event EventHandler<KeyboardKeyEventArgs> KeyDown
         {
             add { _siKeyboardEvents.KeyPressed += value; }
             remove { _siKeyboardEvents.KeyPressed -= value; }
         }
 
-        public override event EventHandler<KeyboardEventArgs> KeyUp
+        public override event EventHandler<KeyboardKeyEventArgs> KeyUp
         {
             add { _siKeyboardEvents.KeyReleased += value; }
             remove { _siKeyboardEvents.KeyReleased -= value; }

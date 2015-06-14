@@ -59,11 +59,13 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Shared\EventArgs\KeyboardKeyEventArgs.cs" />
+    <Compile Include="Starbound.Input\EventArgs\SiKeyboardCharacterEventArgs.cs" />
     <Compile Include="WindowsInput.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="SiInput.cs" />
-    <Compile Include="Shared\EventArgs\KeyboardEventArgs.cs" />
-    <Compile Include="Starbound.Input\EventArgs\SiKeyboardEventArgs.cs" />
+    <Compile Include="Shared\EventArgs\KeyboardCharacterEventArgs.cs" />
+    <Compile Include="Starbound.Input\EventArgs\SiKeyboardKeyEventArgs.cs" />
     <Compile Include="Starbound.Input\EventArgs\SiMouseEventArgs.cs" />
     <Compile Include="Starbound.Input\Keyboard\SiKeyboardEvents.cs" />
     <Compile Include="Shared\Keyboard\KeyboardUtil.cs" />

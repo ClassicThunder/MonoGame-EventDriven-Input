@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Microsoft.Xna.Framework.Input
+﻿namespace Microsoft.Xna.Framework.Input
 {
     /// <summary>
     /// Represents an EventArgs object that is for all keyboard events in Starbound.UI.
     /// </summary>
-    public class SiKeyboardEventArgs : KeyboardEventArgs
+    public class SiKeyboardCharacterEventArgs : KeyboardCharacterEventArgs
     {
         /// <summary>
         /// The current state of they keyboard.
@@ -22,8 +20,8 @@ namespace Microsoft.Xna.Framework.Input
         /// the modifiers that were applied at the time of the press, as well as the keyboard state at 
         /// the time the event occurred.
         /// </summary>
-        public SiKeyboardEventArgs(TimeSpan time, Keys key, Modifiers modifiers, KeyboardState state)
-            : base(key, KeyboardUtil.ToChar(key, modifiers))
+        public SiKeyboardCharacterEventArgs(char character, Modifiers modifiers, KeyboardState state)
+            : base(character)
         {
             State = state;
             Modifiers = modifiers;

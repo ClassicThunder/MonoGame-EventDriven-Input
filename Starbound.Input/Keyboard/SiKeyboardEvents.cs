@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Microsoft.Xna.Framework.Input
 {
@@ -26,23 +27,6 @@ namespace Microsoft.Xna.Framework.Input
         /// Stores the last keyboard state from the previous update.
         /// </summary>
         private KeyboardState _previous;
-
-        /// <summary>
-        /// Stores the last key that was pressed. Used in tracking when keys are held down for
-        /// a prolonged time and need to repeatedly raise key typed events.
-        /// </summary>
-        private Keys _lastKey;
-
-        /// <summary>
-        /// Stores the last time that a key was pressed. Used in tracking when keys are held down for
-        /// a prolonged time and need to repeatedly raise key typed events.
-        /// </summary>
-        private TimeSpan _lastPress;
-
-        /// <summary>
-        /// Indicates whether the last key press was an initial press or not.
-        /// </summary>
-        private bool _isInitial;
 
         /// <summary>
         /// Creates a new SIKeyboardEvents object.
@@ -78,47 +62,57 @@ namespace Microsoft.Xna.Framework.Input
             }
             
             // Key pressed and initial key typed events for all keys.
-            foreach (Keys key in Enum.GetValues(typeof(Keys)))
+            foreach (Keys key in Enum.GetValues(typeof(Keys))
+                .Cast<Keys>()
+                .Where(key => current.IsKeyDown(key) && _previous.IsKeyUp(key))) 
             {
-                if (current.IsKeyDown(key) && _previous.IsKeyUp(key))
-                {
-                    OnKeyPressed(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
-                    OnKeyTyped(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
+                OnKeyPressed(this, new SiKeyboardKeyEventArgs(
+                    key, 
+                    modifiers, 
+                    current));
 
-                    // Maintain the state of last key pressed.
-                    _lastKey = key;
-                    _lastPress = gameTime.TotalGameTime;
-                    _isInitial = true;
+                var character = KeyboardUtil.ToChar(key, modifiers);
+                if (character.HasValue) 
+                {
+                    OnKeyTyped(this, new SiKeyboardCharacterEventArgs(
+                        character.Value,
+                        modifiers,
+                        current));
                 }
             }
 
             // Key released events for all keys.
-            foreach (Keys key in Enum.GetValues(typeof(Keys)))
+            foreach (var key in 
+                Enum.GetValues(typeof(Keys))
+                .Cast<Keys>()
+                .Where(key => current.IsKeyUp(key) && _previous.IsKeyDown(key))) 
             {
-                if (current.IsKeyUp(key) && _previous.IsKeyDown(key)) 
-                {
-                    OnKeyReleased(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, key, modifiers, current));
-                }
-            }
-
-            // Handle keys being held down and getting multiple KeyTyped events in sequence.
-            double elapsedTime = (gameTime.TotalGameTime - _lastPress).TotalMilliseconds;
-
-            if (current.IsKeyDown(_lastKey) && ((_isInitial && elapsedTime > InitialDelay) || (!_isInitial && elapsedTime > RepeatDelay)))
-            {
-                OnKeyTyped(this, new SiKeyboardEventArgs(gameTime.TotalGameTime, _lastKey, modifiers, current));
-                _lastPress = gameTime.TotalGameTime;
-                _isInitial = false;
+                OnKeyReleased(this, new SiKeyboardKeyEventArgs(
+                    key,
+                    modifiers, 
+                    current));
             }
 
             _previous = current;
         }
 
         /// <summary>
+        /// Raises the CharacterTyped event. This is done automatically by a correctly configured component,
+        /// but this is exposed publicly to allow programmatic key typed events to occur.
+        /// </summary>
+        private void OnKeyTyped(object sender, KeyboardCharacterEventArgs args)
+        {
+            if (CharacterTyped != null)
+            {
+                CharacterTyped(sender, args);
+            }
+        }
+
+        /// <summary>
         /// Raises the KeyPressed event. This is done automatically by a correctly configured component,
         /// but this is exposed publicly to allow programmatic key press events to occur.
         /// </summary>
-        private void OnKeyPressed(object sender, KeyboardEventArgs args)
+        private void OnKeyPressed(object sender, KeyboardKeyEventArgs args)
         {
             if (KeyPressed != null) 
             {
@@ -130,7 +124,7 @@ namespace Microsoft.Xna.Framework.Input
         /// Raises the KeyReleased event. This is done automatically by a correctly configured component,
         /// but this is exposed publicly to allow programmatic key release events to occur.
         /// </summary>
-        private void OnKeyReleased(object sender, KeyboardEventArgs args)
+        private void OnKeyReleased(object sender, KeyboardKeyEventArgs args)
         {
             if (KeyReleased != null) 
             {
@@ -139,33 +133,18 @@ namespace Microsoft.Xna.Framework.Input
         }
 
         /// <summary>
-        /// Raises the KeyTyped event. This is done automatically by a correctly configured component,
-        /// but this is exposed publicly to allow programmatic key typed events to occur.
+        /// An event that is raised when a character key is released.
         /// </summary>
-        private void OnKeyTyped(object sender, KeyboardEventArgs args)
-        {
-            if (KeyTyped != null) 
-            {
-                KeyTyped(sender, args);
-            }
-        }
+        public event EventHandler<KeyboardCharacterEventArgs> CharacterTyped;
 
         /// <summary>
         /// An event that is raised when a key is first pressed.
         /// </summary>
-        public event EventHandler<KeyboardEventArgs> KeyPressed;
+        public event EventHandler<KeyboardKeyEventArgs> KeyPressed;
 
         /// <summary>
         /// An event that is raised when a key is released.
         /// </summary>
-        public event EventHandler<KeyboardEventArgs> KeyReleased;
-
-        /// <summary>
-        /// An event that is raised when a key is first pressed, and then periodically again afterwards
-        /// until the key is released. There is a longer initial delay, determined by 
-        /// SIKeyboardEvents.InitialDelay, and then subsequent repeats happen at regular intervals as 
-        /// determined by SIKeyboardEvents.RepeatDelay.
-        /// </summary>
-        public event EventHandler<KeyboardEventArgs> KeyTyped;
+        public event EventHandler<KeyboardKeyEventArgs> KeyReleased;
     }
 }

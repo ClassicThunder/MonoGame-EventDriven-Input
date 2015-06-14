@@ -6,35 +6,33 @@ namespace CTInput
 {
     public class WindowsInput : Input 
     {
-        private readonly InputSystem _inputSystem;
-
-        public WindowsInput(Game game) 
+        public WindowsInput(Game game) : base(game)
         {
-            _inputSystem = new InputSystem(game.Window);
+            InputSystem.Initialize(game.Window);
         }
 
         public override void Update(GameTime gameTime) { }
 
         /*####################################################################*/
         /*                          Keyboard Events                           */
-        /*####################################################################*/        
+        /*####################################################################*/
 
-        public override event EventHandler<KeyboardEventArgs> CharacterTyped
+        public override event EventHandler<KeyboardCharacterEventArgs> CharacterTyped
         {
-            add { _inputSystem.CharEntered += value; }
-            remove { _inputSystem.CharEntered -= value; }
+            add { InputSystem.CharEntered += value; }
+            remove { InputSystem.CharEntered -= value; }
         }
 
-        public override event EventHandler<KeyboardEventArgs> KeyDown
+        public override event EventHandler<KeyboardKeyEventArgs> KeyDown
         {
-            add { _inputSystem.KeyDown += value; }
-            remove { _inputSystem.KeyDown -= value; }
+            add { InputSystem.KeyDown += value; }
+            remove { InputSystem.KeyDown -= value; }
         }
 
-        public override event EventHandler<KeyboardEventArgs> KeyUp
+        public override event EventHandler<KeyboardKeyEventArgs> KeyUp
         {
-            add { _inputSystem.KeyUp += value; }
-            remove { _inputSystem.KeyUp -= value; }
+            add { InputSystem.KeyUp += value; }
+            remove { InputSystem.KeyUp -= value; }
         }
 
 
@@ -45,34 +43,34 @@ namespace CTInput
         //Movement
         public override event EventHandler<MouseEventArgs> MouseMoved
         {
-            add { _inputSystem.MouseMove += value; }
-            remove { _inputSystem.MouseMove -= value; }
+            add { InputSystem.MouseMove += value; }
+            remove { InputSystem.MouseMove -= value; }
         }
 
         //Buttons
         public override event EventHandler<MouseEventArgs> MouseDoubleClick
         {
-            add { _inputSystem.MouseDoubleClick += value; }
-            remove { _inputSystem.MouseDoubleClick -= value; }
+            add { InputSystem.MouseDoubleClick += value; }
+            remove { InputSystem.MouseDoubleClick -= value; }
         }
 
         public override event EventHandler<MouseEventArgs> MouseDown
         {
-            add { _inputSystem.MouseDown += value; }
-            remove { _inputSystem.MouseDown -= value; }
+            add { InputSystem.MouseDown += value; }
+            remove { InputSystem.MouseDown -= value; }
         }
 
         public override event EventHandler<MouseEventArgs> MouseUp
         {
-            add { _inputSystem.MouseUp += value; }
-            remove { _inputSystem.MouseUp -= value; }
+            add { InputSystem.MouseUp += value; }
+            remove { InputSystem.MouseUp -= value; }
         }                
 
         //Wheel
         public override event EventHandler<MouseEventArgs> MouseWheel
         {
-            add { _inputSystem.MouseWheel += value; }
-            remove { _inputSystem.MouseWheel -= value; }
+            add { InputSystem.MouseWheel += value; }
+            remove { InputSystem.MouseWheel -= value; }
         }
     }
 }

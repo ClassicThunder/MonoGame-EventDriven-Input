@@ -1,16 +1,7 @@
-﻿using System;
-
-namespace Microsoft.Xna.Framework.Input 
+﻿namespace Microsoft.Xna.Framework.Input 
 {
-    public delegate void WKeyboardEnteredHandler(object sender, WKeyboardEventArgs e);
-
-    public class WKeyboardEventArgs : EventArgs
+    public class WCharacterEventArgs : KeyboardCharacterEventArgs
     {
-        public char Character 
-        {
-            get { return character; }
-        }
-
         public int Param 
         {
             get { return lParam; }
@@ -41,12 +32,10 @@ namespace Microsoft.Xna.Framework.Input
             get { return (lParam & (1 << 31)) > 0; }
         }
 
-        private readonly char character;
         private readonly int lParam;
 
-        public WKeyboardEventArgs(char character, int lParam)
+        public WCharacterEventArgs(char character, int lParam) : base(character)
         {
-            this.character = character;
             this.lParam = lParam;
         }        
     }

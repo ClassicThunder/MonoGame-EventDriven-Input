@@ -6,6 +6,13 @@ namespace CTInput
 {
     public abstract class Input 
     {
+        protected Game Game { get; set; }
+
+        protected Input(Game game) 
+        {
+            Game = game;
+        }
+
         /*####################################################################*/
         /*                           Input Events                             */
         /*####################################################################*/
@@ -16,10 +23,10 @@ namespace CTInput
         /*                          Keyboard Events                           */
         /*####################################################################*/
 
-        public abstract event EventHandler<KeyboardEventArgs> CharacterTyped;
+        public abstract event EventHandler<KeyboardCharacterEventArgs> CharacterTyped;
 
-        public abstract event EventHandler<KeyboardEventArgs> KeyDown;
-        public abstract event EventHandler<KeyboardEventArgs> KeyUp;
+        public abstract event EventHandler<KeyboardKeyEventArgs> KeyDown;
+        public abstract event EventHandler<KeyboardKeyEventArgs> KeyUp;
 
         /*####################################################################*/
         /*                            Mouse Events                            */
