@@ -61,6 +61,9 @@
   <ItemGroup>
     <Compile Include="Shared\EventArgs\KeyboardKeyEventArgs.cs" />
     <Compile Include="Starbound.Input\EventArgs\SiKeyboardCharacterEventArgs.cs" />
+    <Compile Include="Win32\VirtualKeys.cs" />
+    <Compile Include="Win32\WindowsMessages.cs" />
+    <Compile Include="Win32\Win32.cs" />
     <Compile Include="WindowsInput.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="SiInput.cs" />

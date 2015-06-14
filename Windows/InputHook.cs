@@ -9,28 +9,15 @@ namespace Microsoft.Xna.Framework.Input
         /*                               Events                               */
         /*####################################################################*/
 
-        /// Event raised when a character has been entered.          
         public static event EventHandler<KeyboardCharacterEventArgs> CharEntered;
 
-        /// Event raised when a key has been pressed down. May fire multiple times due to keyboard repeat.           
         public static event EventHandler<KeyboardKeyEventArgs> KeyDown;
-
-        /// Event raised when a key has been released.
         public static event EventHandler<KeyboardKeyEventArgs> KeyUp;
 
-        /// Event raised when a mouse button is pressed.
         public static event EventHandler<MouseEventArgs> MouseDown;
-
-        /// Event raised when a mouse button is released.    
         public static event EventHandler<MouseEventArgs> MouseUp;
-
-        /// Event raised when the mouse changes location.
         public static event EventHandler<MouseEventArgs> MouseMove;
-
-        /// Event raised when the mouse wheel has been moved.        
         public static event EventHandler<MouseEventArgs> MouseWheel;
-
-        /// Event raised when a mouse button has been double clicked.        
         public static event EventHandler<MouseEventArgs> MouseDoubleClick;
 
         /*####################################################################*/
@@ -41,55 +28,11 @@ namespace Microsoft.Xna.Framework.Input
 
         private static bool Initialized { get; set; }
 
+        private static IntPtr _hImc; //Used to keep the callback from getting GCed
         private static WndProc _hookProcDelegate;
-
-        private static IntPtr _prevWndProc;
-        private static IntPtr _hImc;
+        private static Win32.WndProcDelegate _prevWndProc;        
 
         private static int _totalDelta;
-        
-        const int GwlWndproc = -4;
-        const int WmKeyDown = 0x100;
-        const int WmKeyup = 0x101;
-        const int WmChar = 0x102;
-        const int WmImeSetContext = 0x281;
-        const int WmInputLangChange = 0x51;
-        const int WmGetDlgCode = 0x87;
-        const int WmImeComposition = 0x10F;
-        const int DlgcWantAllKeys = 4;
-        const int WmMouseMove = 0x200;
-        const int WmLButtonDown = 0x201;
-        const int WmLButtonUp = 0x202;
-        const int WmLButtOnDblClk = 0x203;
-        const int WmRButtonDown = 0x204;
-        const int WmRButtonUp = 0x205;
-        const int WmRButtOndDlClk = 0x206;
-        const int WmMButtOnDown = 0x207;
-        const int WmMButtOnUp = 0x208;
-        const int WmMButtOnDblClk = 0x209;
-        const int WmMouseWheel = 0x20A;
-        const int WmXButtOnDown = 0x20B;
-        const int WmXButtOnUp = 0x20C;
-        const int WmXButtOnDblClk = 0x20D;
-
-        //const int SmCxDoubleClk = 36;
-        //const int SmCyDoubleClk = 37;
-
-        /*####################################################################*/
-        /*                            DLL Imports                             */
-        /*####################################################################*/
-
-        [DllImport("Imm32.dll")]
-        static extern IntPtr ImmGetContext(IntPtr hWnd);
-
-        [DllImport("Imm32.dll")]
-        static extern IntPtr ImmAssociateContext(IntPtr hWnd, IntPtr hIMC);
-
-        [DllImport("user32.dll")]
-        static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         /*####################################################################*/
         /*                         Message Translation                        */
@@ -99,129 +42,130 @@ namespace Microsoft.Xna.Framework.Input
         /// The XNA window to which text input should be linked.
         internal static void Initialize(GameWindow window)
         {
-            if (Initialized) 
-            {                    
+            if (Initialized)
+            {
                 throw new Exception("Only 1 instance of Windows input can be created at a time.");
             }
 
             _hookProcDelegate = HookProc;
-            _prevWndProc = (IntPtr)SetWindowLong(
-                window.Handle, 
-                GwlWndproc, 
+            _prevWndProc = Win32.SetWindowLong(
+                window.Handle,
+                Win32.GWL_WNDPROC,
                 (int)Marshal.GetFunctionPointerForDelegate(_hookProcDelegate));
-            _hImc = ImmGetContext(window.Handle);
-
-            //LowLevelKeyboardProc 
+            _hImc = Win32.ImmGetContext(window.Handle);
 
             Initialized = true;
         }
 
         private static IntPtr HookProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
-            var returnCode = CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
+            var returnCode = Win32.CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
 
-            switch (msg)
+            var wparam = wParam.ToInt32();
+            var lparam = lParam.ToInt32();
+
+            short low, high;
+            SplitIntIntoWords(wparam, out low, out high);
+
+            var virtualKey = (Keys)Win32.MapVirtualKey((uint)((lparam & 0x00ff0000) >> 16), Win32.MAPVK_VSC_TO_VK_EX);
+
+            switch ((WindowsMessages)msg)
             {
-                case WmGetDlgCode:
-                    returnCode = (IntPtr)(returnCode.ToInt32() | DlgcWantAllKeys);
+                    //Keyboard messages
+                case WindowsMessages.GETDLGCODE:
+                    returnCode = (IntPtr)(returnCode.ToInt32() | Win32.DLGC_WANTALLKEYS);
                     break;
-                case WmKeyDown:
+                case WindowsMessages.KEYDOWN:
                     if (KeyDown != null)
-                        KeyDown(null, new WKeyEventArgs((Keys)wParam));
+                        KeyDown(null, new WKeyEventArgs(virtualKey));
                     break;
-                case WmKeyup:
+                case WindowsMessages.KEYUP:
                     if (KeyUp != null)
-                        KeyUp(null, new WKeyEventArgs((Keys)wParam));
+                        KeyUp(null, new WKeyEventArgs(virtualKey));
                     break;
-                case WmChar:
+                case WindowsMessages.CHAR:
                     if (CharEntered != null)
-                        CharEntered(null, new WCharacterEventArgs((char)wParam, lParam.ToInt32()));
-                    break;
-                case WmImeSetContext:
-                    if (wParam.ToInt32() == 1)
-                        ImmAssociateContext(hWnd, _hImc);
-                    break;
-                case WmInputLangChange:
-                    ImmAssociateContext(hWnd, _hImc);
-                    returnCode = (IntPtr)1;
+                        CharEntered(null, new WCharacterEventArgs((char)wParam, lparam));
                     break;
 
-                // Mouse messages                       
-                case WmMouseMove:
+                    // Mouse messages                       
+                case WindowsMessages.MOUSEMOVE:
                     if (MouseMove != null)
                     {
                         short x, y;
-                        MouseLocationFromLParam(lParam.ToInt32(), out x, out y);
+                        MouseLocationFromLParam(lparam, out x, out y);
                         MouseMove(null, new WMouseEventArgs(
                             x, y, MouseButton.None, 0, null, null));
                     }
                     break;
-                case WmMouseWheel:
-                    if (MouseWheel != null) 
+                case WindowsMessages.MOUSEWHEEL:
+                    if (MouseWheel != null)
                     {
-                        var delta = (wParam.ToInt32() >> 16)/120;
+                        var delta = (wparam >> 16) / 120;
                         _totalDelta += delta;
                         short x, y;
-                        MouseLocationFromLParam(lParam.ToInt32(), out x, out y);
+                        MouseLocationFromLParam(lparam, out x, out y);
                         MouseWheel(null, new WMouseEventArgs(
                             x, y, MouseButton.None, 0, _totalDelta, delta));
                     }
                     break;
-                case WmLButtonDown:
-                    RaiseMouseDownEvent(MouseButton.Left, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.LBUTTONDOWN:
+                    RaiseMouseDownEvent(MouseButton.Left, lparam);
                     break;
-                case WmLButtonUp:
-                    RaiseMouseUpEvent(MouseButton.Left, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.LBUTTONUP:
+                    RaiseMouseUpEvent(MouseButton.Left, lparam);
                     break;
-                case WmLButtOnDblClk:
-                    RaiseMouseDblClickEvent(MouseButton.Left, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.LBUTTONDBLCLK:
+                    RaiseMouseDblClickEvent(MouseButton.Left, lparam);
                     break;
-                case WmRButtonDown:
-                    RaiseMouseDownEvent(MouseButton.Right, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.RBUTTONDOWN:
+                    RaiseMouseDownEvent(MouseButton.Right, lparam);
                     break;
-                case WmRButtonUp:
-                    RaiseMouseUpEvent(MouseButton.Right, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.RBUTTONUP:
+                    RaiseMouseUpEvent(MouseButton.Right, lparam);
                     break;
-                case WmRButtOndDlClk:
-                    RaiseMouseDblClickEvent(MouseButton.Right, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.RBUTTONDBLCLK:
+                    RaiseMouseDblClickEvent(MouseButton.Right, lparam);
                     break;
-                case WmMButtOnDown:
-                    RaiseMouseDownEvent(MouseButton.Middle, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.MBUTTONDOWN:
+                    RaiseMouseDownEvent(MouseButton.Middle, lparam);
                     break;
-                case WmMButtOnUp:
-                    RaiseMouseUpEvent(MouseButton.Middle, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.MBUTTONUP:
+                    RaiseMouseUpEvent(MouseButton.Middle, lparam);
                     break;
-                case WmMButtOnDblClk:
-                    RaiseMouseDblClickEvent(MouseButton.Middle, wParam.ToInt32(), lParam.ToInt32());
+                case WindowsMessages.MBUTTONDBLCLK:
+                    RaiseMouseDblClickEvent(MouseButton.Middle, lparam);
                     break;
-                case WmXButtOnDown:
-                    if ((wParam.ToInt32() & 0x10000) != 0)
+                case WindowsMessages.XBUTTONDOWN:
+                    switch (high)
                     {
-                        RaiseMouseDownEvent(MouseButton.XButton1, wParam.ToInt32(), lParam.ToInt32());
-                    }
-                    else if ((wParam.ToInt32() & 0x20000) != 0)
-                    {
-                        RaiseMouseDownEvent(MouseButton.XButton2, wParam.ToInt32(), lParam.ToInt32());
-                    }
-                    break;
-                case WmXButtOnUp:
-                    if ((wParam.ToInt32() & 0x10000) != 0)
-                    {
-                        RaiseMouseUpEvent(MouseButton.XButton1, wParam.ToInt32(), lParam.ToInt32());
-                    }
-                    else if ((wParam.ToInt32() & 0x20000) != 0)
-                    {
-                        RaiseMouseUpEvent(MouseButton.XButton2, wParam.ToInt32(), lParam.ToInt32());
+                        case 0x0001:
+                            RaiseMouseDownEvent(MouseButton.XButton1, lparam);
+                            break;
+                        case 0x0002:
+                            RaiseMouseDownEvent(MouseButton.XButton2, lparam);
+                            break;
                     }
                     break;
-                case WmXButtOnDblClk:
-                    if ((wParam.ToInt32() & 0x10000) != 0)
+                case WindowsMessages.XBUTTONUP:
+                    switch (high)
                     {
-                        RaiseMouseDblClickEvent(MouseButton.XButton1, wParam.ToInt32(), lParam.ToInt32());
+                        case 0x0001:
+                            RaiseMouseUpEvent(MouseButton.XButton1, lparam);
+                            break;
+                        case 0x0002:
+                            RaiseMouseUpEvent(MouseButton.XButton2, lparam);
+                            break;
                     }
-                    else if ((wParam.ToInt32() & 0x20000) != 0)
-                    {
-                        RaiseMouseDblClickEvent(MouseButton.XButton2, wParam.ToInt32(), lParam.ToInt32());
+                    break;
+                case WindowsMessages.XBUTTONDBLCLK:
+                    switch (high) {
+                        case 0x0001:
+                            RaiseMouseDblClickEvent(MouseButton.XButton1, lparam);
+                            break;
+                        case 0x0002:
+                            RaiseMouseDblClickEvent(MouseButton.XButton2, lparam);
+                            break;
                     }
                     break;
             }
@@ -233,7 +177,7 @@ namespace Microsoft.Xna.Framework.Input
         /*                            Raise Events                            */
         /*####################################################################*/
 
-        private static void RaiseMouseDownEvent(MouseButton button, int wParam, int lParam)
+        private static void RaiseMouseDownEvent(MouseButton button, int lParam)
         {
             if (MouseDown == null) { return; }
 
@@ -242,7 +186,7 @@ namespace Microsoft.Xna.Framework.Input
             MouseDown(null, new WMouseEventArgs(x, y, button, 1, null, null));
         }
 
-        private static void RaiseMouseUpEvent(MouseButton button, int wParam, int lParam)
+        private static void RaiseMouseUpEvent(MouseButton button, int lParam)
         {
             if (MouseUp == null) { return; }
 
@@ -251,7 +195,7 @@ namespace Microsoft.Xna.Framework.Input
             MouseUp(null, new WMouseEventArgs(x, y, button, 1, null, null));
         }
 
-        private static void RaiseMouseDblClickEvent(MouseButton button, int wParam, int lParam)
+        private static void RaiseMouseDblClickEvent(MouseButton button, int lParam)
         {
             if (MouseDoubleClick == null) { return; }
 
@@ -264,6 +208,12 @@ namespace Microsoft.Xna.Framework.Input
         {
             x = (short)(lParam & 0xFFFF);
             y = (short)(lParam >> 16);
+        }
+
+        private static void SplitIntIntoWords(int lParam, out short lowOrder, out short highOrder)
+        {
+            lowOrder = (short)(lParam & 0xFFFF);
+            highOrder = (short)(lParam >> 16);
         }
     }
 }

@@ -6,8 +6,11 @@ namespace CTInput
 {
     public class WindowsInput : Input 
     {
-        public WindowsInput(Game game) : base(game)
+        //private WindowsHook _windowsHook;
+
+        public WindowsInput(Game game) : base(game) 
         {
+            //_windowsHook = new WindowsHook(game.Window.Handle);
             InputSystem.Initialize(game.Window);
         }
 
