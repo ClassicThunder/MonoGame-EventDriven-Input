@@ -29,7 +29,7 @@ the polling rate for all other implementations than CIInput.
 
 For the final project there will be 4 subclasses that extend the abstract Input class. 
 
-* CIInput (100% Done)
+* CIInput (Done)
 
 A modification of the [Starbound Input](https://bitbucket.org/rbwhitaker/starbound-input/) library. This 
 library simply keeps track of state changes each tick and fires an event when a change occurs. Uses hard 
@@ -37,7 +37,7 @@ coded settings to control the double click time and other settings.
 
 ToDo: Make the settings a separate class that is passed into the constructor.
 
-* WindowsInput (100% Done)
+* WindowsInput (Done)
 
 Converts the messages popped off of the windows event queue into events using XNA's event args. The main advantage 
 of this one is that it uses the native windows settings (double click time, character repeating time, etc...).
