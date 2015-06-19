@@ -25,7 +25,7 @@ namespace CTInput
                 _mouseEvents.Update(gameTime);
             }
             
-            _siKeyboardEvents.Update(gameTime);
+            _siKeyboardEvents.Update();
         }
 
 

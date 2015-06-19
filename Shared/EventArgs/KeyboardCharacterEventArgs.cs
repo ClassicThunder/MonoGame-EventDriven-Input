@@ -2,11 +2,11 @@
 
 namespace Microsoft.Xna.Framework.Input
 {
-    public abstract class KeyboardCharacterEventArgs : EventArgs
+    public class KeyboardCharacterEventArgs : EventArgs
     {
-        public char? Character { get; set; }
+        public char? Character { get; private set; }
 
-        protected internal KeyboardCharacterEventArgs(char? character) 
+        internal KeyboardCharacterEventArgs(char? character) 
         {
             Character = character;
         }

@@ -24,7 +24,11 @@ namespace Microsoft.Xna.Framework.Input
         /*                       Properties and Constants                     */
         /*####################################################################*/
 
-        delegate IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        delegate IntPtr WndProc(
+            IntPtr hWnd,
+            WindowsMessages msg, 
+            IntPtr wParam, 
+            IntPtr lParam);
 
         private static bool Initialized { get; set; }
 
@@ -57,35 +61,60 @@ namespace Microsoft.Xna.Framework.Input
             Initialized = true;
         }
 
-        private static IntPtr HookProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        private static IntPtr HookProc(IntPtr hWnd, WindowsMessages msg, IntPtr wParam, IntPtr lParam)
         {
-            var returnCode = Win32.CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
+            var returnCode = Win32.DefWindowProc(hWnd, msg, wParam, lParam);
 
             var wparam = wParam.ToInt32();
             var lparam = lParam.ToInt32();
 
+            var extended = (lParam.ToInt32() & 0x01000000) != 0;
+
             short low, high;
             SplitIntIntoWords(wparam, out low, out high);
 
-            var virtualKey = (Keys)Win32.MapVirtualKey((uint)((lparam & 0x00ff0000) >> 16), Win32.MAPVK_VSC_TO_VK_EX);
+            var virtualKey = (Keys)Win32.MapVirtualKey(
+                (uint)((lparam & 0x00ff0000) >> 16), 
+                Win32.MAPVK_VSC_TO_VK_EX);
 
-            switch ((WindowsMessages)msg)
+            switch (msg)
             {
                     //Keyboard messages
                 case WindowsMessages.GETDLGCODE:
                     returnCode = (IntPtr)(returnCode.ToInt32() | Win32.DLGC_WANTALLKEYS);
                     break;
                 case WindowsMessages.KEYDOWN:
+                case WindowsMessages.SYSKEYDOWN:
+                    if (wparam == (int)VirtualKeys.CONTROL) 
+                    {
+                        virtualKey = (Keys)(extended ? VirtualKeys.RCONTROL : VirtualKeys.LCONTROL);
+                    }
+                    if (wparam == (int)VirtualKeys.MENU)
+                    {
+                        virtualKey = (Keys)(extended ? VirtualKeys.RMENU : VirtualKeys.LMENU);
+                    }
+
                     if (KeyDown != null)
-                        KeyDown(null, new WKeyEventArgs(virtualKey));
+                        KeyDown(null, new KeyboardKeyEventArgs(virtualKey));                    
                     break;
                 case WindowsMessages.KEYUP:
+                case WindowsMessages.SYSKEYUP:
+                    if (wparam == (int)VirtualKeys.CONTROL)
+                    {
+                        virtualKey = (Keys)(extended ? VirtualKeys.RCONTROL : VirtualKeys.LCONTROL);
+                    }
+                    if (wparam == (int)VirtualKeys.MENU)
+                    {
+                        virtualKey = (Keys)(extended ? VirtualKeys.RMENU : VirtualKeys.LMENU);
+                    }
+
                     if (KeyUp != null)
-                        KeyUp(null, new WKeyEventArgs(virtualKey));
+                        KeyUp(null, new KeyboardKeyEventArgs(virtualKey));
                     break;
                 case WindowsMessages.CHAR:
+                case WindowsMessages.SYSCHAR:
                     if (CharEntered != null)
-                        CharEntered(null, new WCharacterEventArgs((char)wParam, lparam));
+                        CharEntered(null, new KeyboardCharacterEventArgs((char)wParam));
                     break;
 
                     // Mouse messages                       
@@ -99,6 +128,8 @@ namespace Microsoft.Xna.Framework.Input
                     }
                     break;
                 case WindowsMessages.MOUSEWHEEL:
+                    returnCode = Win32.CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
+
                     if (MouseWheel != null)
                     {
                         var delta = (wparam >> 16) / 120;
@@ -169,7 +200,7 @@ namespace Microsoft.Xna.Framework.Input
                     }
                     break;
             }
-
+            
             return returnCode;
         }
 

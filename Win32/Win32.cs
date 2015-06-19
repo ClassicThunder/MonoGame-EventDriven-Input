@@ -15,24 +15,33 @@ namespace Microsoft.Xna.Framework.Input
         internal const uint MAPVK_VK_TO_VSC_EX = 0x04;
 
         [DllImport("user32.dll")]
-        internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+        internal static extern uint MapVirtualKey(
+            uint uCode,
+            uint uMapType);
 
         [DllImport("Imm32.dll", SetLastError = true)]
         internal static extern IntPtr ImmGetContext(
             IntPtr hWnd);
 
         internal delegate IntPtr WndProcDelegate(
-            IntPtr hWnd, 
-            uint msg, 
+            IntPtr hWnd,
+            WindowsMessages msg, 
             IntPtr wParam,
             IntPtr lParam);
 
         [DllImport("user32.dll")]
         internal static extern IntPtr CallWindowProc(
             WndProcDelegate lpPrevWndFunc,
-            IntPtr hWnd, 
-            uint Msg, 
+            IntPtr hWnd,
+            WindowsMessages msg, 
             IntPtr wParam, 
+            IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr DefWindowProc(
+            IntPtr hWnd,
+            WindowsMessages msg, 
+            IntPtr wParam,
             IntPtr lParam);
 
         /// <summary>

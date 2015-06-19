@@ -41,43 +41,26 @@ namespace Microsoft.Xna.Framework.Input
         /// Updates the component, turning XNA's polling model into an event-based model, raising
         /// events as they happen.
         /// </summary>
-        /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime)
+        public void Update()
         {
             var current = Keyboard.GetState();
-
-            // Build the modifiers that currently apply to the current situation.
-            var modifiers = Modifiers.None;
-            if (current.IsKeyDown(Keys.LeftControl) || current.IsKeyDown(Keys.RightControl)) 
-            {
-                modifiers |= Modifiers.Control;
-            }
-            if (current.IsKeyDown(Keys.LeftShift) || current.IsKeyDown(Keys.RightShift)) 
-            {
-                modifiers |= Modifiers.Shift;
-            }
-            if (current.IsKeyDown(Keys.LeftAlt) || current.IsKeyDown(Keys.RightAlt)) 
-            {
-                modifiers |= Modifiers.Alt;
-            }
             
             // Key pressed and initial key typed events for all keys.
-            foreach (Keys key in Enum.GetValues(typeof(Keys))
-                .Cast<Keys>()
-                .Where(key => current.IsKeyDown(key) && _previous.IsKeyUp(key))) 
+            if (!current.IsKeyDown(Keys.LeftAlt)
+                && !current.IsKeyDown(Keys.RightAlt)) 
             {
-                OnKeyPressed(this, new SiKeyboardKeyEventArgs(
-                    key, 
-                    modifiers, 
-                    current));
-
-                var character = KeyboardUtil.ToChar(key, modifiers);
-                if (character.HasValue) 
+                foreach (var key in Enum.GetValues(typeof (Keys))
+                    .Cast<Keys>()
+                    .Where(key => current.IsKeyDown(key) && _previous.IsKeyUp(key)))
                 {
-                    OnKeyTyped(this, new SiKeyboardCharacterEventArgs(
-                        character.Value,
-                        modifiers,
-                        current));
+                    var args = new KeyboardKeyEventArgs(key);
+
+                    OnKeyPressed(this, args);
+
+                    var character = KeyboardUtil.ToChar(key, args.Modifiers);
+                    if (character.HasValue) {
+                        OnKeyTyped(this, new KeyboardCharacterEventArgs(character.Value));
+                    }
                 }
             }
 
@@ -87,10 +70,7 @@ namespace Microsoft.Xna.Framework.Input
                 .Cast<Keys>()
                 .Where(key => current.IsKeyUp(key) && _previous.IsKeyDown(key))) 
             {
-                OnKeyReleased(this, new SiKeyboardKeyEventArgs(
-                    key,
-                    modifiers, 
-                    current));
+                OnKeyReleased(this, new KeyboardKeyEventArgs(key));
             }
 
             _previous = current;
