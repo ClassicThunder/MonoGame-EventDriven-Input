@@ -67,7 +67,8 @@
 
             if (key == Keys.Space) { return ' '; }
             if (key == Keys.Tab) { return '\t'; }
-            if (key == Keys.Enter) { return '\n'; }
+            if (key == Keys.Enter) { return (char)13; }
+            if (key == Keys.Back) { return (char)8; }
 
             if (key == Keys.Add) { return '+'; }
             if (key == Keys.Decimal) { return '.'; }
