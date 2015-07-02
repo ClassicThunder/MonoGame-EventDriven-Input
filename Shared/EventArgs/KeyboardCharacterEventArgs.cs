@@ -4,9 +4,9 @@ namespace Microsoft.Xna.Framework.Input
 {
     public class KeyboardCharacterEventArgs : EventArgs
     {
-        public char? Character { get; private set; }
+        public char Character { get; private set; }
 
-        internal KeyboardCharacterEventArgs(char? character) 
+        internal KeyboardCharacterEventArgs(char character) 
         {
             Character = character;
         }

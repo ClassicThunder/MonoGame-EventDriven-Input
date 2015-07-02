@@ -11,9 +11,6 @@
         /// the shift key. In the event that they supplied key doesn't translate into a character, null
         /// is returned instead.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="modifiers"></param>
-        /// <returns></returns>
         public static char? ToChar(Keys key, Modifiers modifiers = Modifiers.None)
         {
             if (key == Keys.A) { return ((modifiers & Modifiers.Shift) == Modifiers.Shift) ? 'A' : 'a'; }

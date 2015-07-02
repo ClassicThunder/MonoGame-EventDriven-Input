@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Microsoft.Xna.Framework.Input
 {
@@ -17,13 +16,7 @@ namespace Microsoft.Xna.Framework.Input
         /// <summary>
         /// Stores information about when the last click was for the purposes of handling double clicks.
         /// </summary>
-        private readonly Dictionary<MouseButton, SiMouseEventArgs> _lastClicks;
-
-        /// <summary>
-        /// Stores information about when the last double click was for the purposes of handling triple
-        /// clicks.
-        /// </summary>
-        private readonly Dictionary<MouseButton, SiMouseEventArgs> _lastDoubleClicks;
+        private SiMouseEventArgs _lastClick;
 
         /// <summary>
         /// The maximum amount of time allowed between clicks for it to count as a double-click. Measured in
@@ -56,30 +49,12 @@ namespace Microsoft.Xna.Framework.Input
             DoubleClickMaxMove = 2;
             MoveRaisedOnDrag = true;
 
-            _lastClicks = new Dictionary<MouseButton, SiMouseEventArgs>();
-            _lastDoubleClicks = new Dictionary<MouseButton, SiMouseEventArgs>();
-
-            _lastClicks.Add(MouseButton.Left, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Left));
-            _lastClicks.Add(MouseButton.Right, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Right));
-            _lastClicks.Add(MouseButton.Middle, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Middle));
-            _lastClicks.Add(MouseButton.XButton1, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton1));
-            _lastClicks.Add(MouseButton.XButton2, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton2));
-
-            _lastDoubleClicks.Add(MouseButton.Left, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Left));
-            _lastDoubleClicks.Add(MouseButton.Right, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Right));
-            _lastDoubleClicks.Add(MouseButton.Middle, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.Middle));
-            _lastDoubleClicks.Add(MouseButton.XButton1, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton1));
-            _lastDoubleClicks.Add(MouseButton.XButton2, new SiMouseEventArgs(-1, -1, 
-                new TimeSpan(-1, 0, 0), new MouseState(), new MouseState(), MouseButton.XButton2));
+            _lastClick = new SiMouseEventArgs(
+                -1, 
+                -1,
+                new TimeSpan(),
+                Mouse.GetState(),
+                Mouse.GetState());
         }
 
         /// <summary>
@@ -313,16 +288,16 @@ namespace Microsoft.Xna.Framework.Input
         private void OnButtonClicked(object sender, SiMouseEventArgs args)
         {
             // If this click is within the right time and position of the last click, raise a
-            // double-click event as well.
-            var lastClick = _lastClicks[args.Button].Time;
-            if ((args.Time - lastClick).TotalMilliseconds < DoubleClickTime &&
-                DistanceBetween(args.Current, _lastClicks[args.Button].Current) < DoubleClickMaxMove)
+            // double-click event as well.           
+            if (_lastClick.Button == args.Button &&
+                (args.Time - _lastClick.Time).TotalMilliseconds < DoubleClickTime &&
+                DistanceBetween(args.Current, _lastClick.Current) < DoubleClickMaxMove)
             {
                 OnButtonDoubleClicked(sender, args);
-                _lastDoubleClicks[args.Button] = args;
+                _lastClick = args;
             }
 
-            _lastClicks[args.Button] = args;
+            _lastClick = args;
         }
 
         /// <summary>
@@ -341,7 +316,10 @@ namespace Microsoft.Xna.Framework.Input
         /// <param name="args"></param>
         private void OnButtonPressed(object sender, MouseEventArgs args)
         {
-            if (ButtonPressed != null) { ButtonPressed(sender, args); }
+            if (ButtonPressed != null) 
+            {
+                ButtonPressed(sender, args);
+            }
         }
 
         /// <summary>
@@ -352,7 +330,10 @@ namespace Microsoft.Xna.Framework.Input
         /// <param name="args"></param>
         private void OnButtonDoubleClicked(object sender, MouseEventArgs args)
         {
-            if (ButtonDoubleClicked != null) { ButtonDoubleClicked(sender, args); }
+            if (ButtonDoubleClicked != null) 
+            {
+                ButtonDoubleClicked(sender, args);
+            }
         }
 
         /// <summary>
