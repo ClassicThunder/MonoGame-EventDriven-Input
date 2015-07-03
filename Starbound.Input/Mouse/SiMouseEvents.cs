@@ -122,62 +122,6 @@ namespace Microsoft.Xna.Framework.Input
                     MouseButton.XButton2));
             }
 
-            // Check button click events.
-            if (current.LeftButton == ButtonState.Pressed && _previous.LeftButton == ButtonState.Released) 
-            {
-                OnButtonClicked(this, new SiMouseEventArgs(
-                    current.X,
-                    current.Y, 
-                    gameTime.TotalGameTime,
-                    _previous, 
-                    current, 
-                    MouseButton.Left));
-            }
-
-            if (current.MiddleButton == ButtonState.Pressed && _previous.MiddleButton == ButtonState.Released) 
-            {
-                OnButtonClicked(this, new SiMouseEventArgs(
-                    current.X,
-                    current.Y, 
-                    gameTime.TotalGameTime,
-                    _previous, 
-                    current, 
-                    MouseButton.Middle));
-            }
-
-            if (current.RightButton == ButtonState.Pressed && _previous.RightButton == ButtonState.Released)
-            {
-                OnButtonClicked(this, new SiMouseEventArgs(
-                    current.X,
-                    current.Y, 
-                    gameTime.TotalGameTime,
-                    _previous, 
-                    current,
-                    MouseButton.Right));
-            }
-
-            if (current.XButton1 == ButtonState.Pressed && _previous.XButton1 == ButtonState.Released)
-            {
-                OnButtonClicked(this, new SiMouseEventArgs(
-                    current.X,
-                    current.Y, 
-                    gameTime.TotalGameTime,
-                    _previous,
-                    current,
-                    MouseButton.XButton1));
-            }
-
-            if (current.XButton2 == ButtonState.Pressed && _previous.XButton2 == ButtonState.Released) 
-            {
-                OnButtonClicked(this, new SiMouseEventArgs(
-                    current.X, 
-                    current.Y, 
-                    gameTime.TotalGameTime, 
-                    _previous,
-                    current,
-                    MouseButton.XButton2));
-            }
-
             // Check button releases.
             if (current.LeftButton == ButtonState.Released && _previous.LeftButton == ButtonState.Pressed) 
             {
@@ -280,60 +224,37 @@ namespace Microsoft.Xna.Framework.Input
         }
 
         /// <summary>
-        /// Raises the ButtonClicked event. This is done automatically by a correctly configured component,
-        /// but this is exposed publicly to allow programmatic button click events to occur.
+        /// Raises the ButtonPressed event. This is done automatically by a correctly configured component,
+        /// but this is exposed publicly to allow programmatic button press events to occur.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void OnButtonClicked(object sender, SiMouseEventArgs args)
+        private void OnButtonPressed(object sender, SiMouseEventArgs args)
         {
             // If this click is within the right time and position of the last click, raise a
             // double-click event as well.           
-            if (_lastClick.Button == args.Button &&
+            if (ButtonDoubleClicked != null &&
+                _lastClick.Button == args.Button &&
                 (args.Time - _lastClick.Time).TotalMilliseconds < DoubleClickTime &&
                 DistanceBetween(args.Current, _lastClick.Current) < DoubleClickMaxMove)
             {
-                OnButtonDoubleClicked(sender, args);
-                _lastClick = args;
+                ButtonDoubleClicked(sender, args);
+                args.Time = new TimeSpan(0);
+            }
+            else if (ButtonPressed != null) 
+            {
+                ButtonPressed(sender, args);
             }
 
             _lastClick = args;
-        }
-
+        }   
+     
         /// <summary>
         /// Calculates the Manhattan distance between two mouse positions.
         /// </summary>
         private static int DistanceBetween(MouseState a, MouseState b)
         {
             return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
-        }
-
-        /// <summary>
-        /// Raises the ButtonPressed event. This is done automatically by a correctly configured component,
-        /// but this is exposed publicly to allow programmatic button press events to occur.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void OnButtonPressed(object sender, MouseEventArgs args)
-        {
-            if (ButtonPressed != null) 
-            {
-                ButtonPressed(sender, args);
-            }
-        }
-
-        /// <summary>
-        /// Raises the ButtonDoubleClicked event. This is done automatically by a correctly configured component,
-        /// but this is exposed publicly to allow programmatic button double-click events to occur.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void OnButtonDoubleClicked(object sender, MouseEventArgs args)
-        {
-            if (ButtonDoubleClicked != null) 
-            {
-                ButtonDoubleClicked(sender, args);
-            }
         }
 
         /// <summary>

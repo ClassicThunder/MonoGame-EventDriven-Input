@@ -10,7 +10,7 @@ namespace Microsoft.Xna.Framework.Input
         /// <summary>
         /// Stores the time of the event as a TimeSpan since the game began.
         /// </summary>
-        public TimeSpan Time { get; private set; }
+        public TimeSpan Time { get; internal set; }
 
         /// <summary>
         /// Gets or sets the previous mouse state for the given event. This is what the mouse looked like
