@@ -9,7 +9,7 @@ queue.
 #### Getting Started
 
 ```C#
-//Instantiate the appropriate Input type
+//Instantiate the appropriate Input type and pass in the game object
 Input _input = new WindowsInput(this); //Windows form specific using the Message Queue
 Input _input = new SiInput(this); //Generic implementation based upon polling state changes
 
@@ -40,16 +40,15 @@ public abstract event EventHandler<MouseEventArgs> MouseWheel;
 
 #### Generic and Windows Specific Implementations
 
+* WindowsInput (Done)
+
+Converts the messages popped off of the windows event queue into events using XNA's event args. The main advantage 
+of this implimentation is that it uses the native windows settings (double click time, character repeating time, etc...).
+
 * SIInput
 
 A modification of the [Starbound Input](https://bitbucket.org/rbwhitaker/starbound-input/) library with the goal of 
 making it consistent with the behavior of the windows Message queue. This library simply keeps track of state changes 
 each tick and fires an event when a change occurs. Uses hard coded settings to control the double click time and other
 settings. 
-
-* WindowsInput (Done)
-
-Converts the messages popped off of the windows event queue into events using XNA's event args. The main advantage 
-of this one is that it uses the native windows settings (double click time, character repeating time, etc...).
-
 
