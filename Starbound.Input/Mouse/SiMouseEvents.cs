@@ -227,8 +227,6 @@ namespace Microsoft.Xna.Framework.Input
         /// Raises the ButtonPressed event. This is done automatically by a correctly configured component,
         /// but this is exposed publicly to allow programmatic button press events to occur.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
         private void OnButtonPressed(object sender, SiMouseEventArgs args)
         {
             // If this click is within the right time and position of the last click, raise a

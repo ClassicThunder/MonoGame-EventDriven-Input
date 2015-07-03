@@ -9,19 +9,12 @@ namespace Microsoft.Xna.Framework.Input
     /// </summary>
     public class SiKeyboardEvents
     {
-        /// <summary>
-        /// Represents the amount of time between a key being pressed, and the time that key typed events
-        /// start repeating. This is measured in milliseconds. The initial delay is traditionally 
-        /// significantly longer than other delays. The default is 800 milliseconds.
-        /// </summary>
-        public static int InitialDelay { get; set; }
+        private static int InitialDelay { get; set; }
+        private static int RepeatDelay { get; set; }
 
-        /// <summary>
-        /// Represents the amount of time delay between key typed events after the first repeat. This 
-        /// "normal" repeat delay is typically much faster than the initial. The default is 50 milliseconds
-        /// (20 times per second).
-        /// </summary>
-        public static int RepeatDelay { get; set; }
+        private Keys _lastKey;
+        private TimeSpan _lastPress;
+        private bool _isInitial;
         
         /// <summary>
         /// Stores the last keyboard state from the previous update.
@@ -41,10 +34,11 @@ namespace Microsoft.Xna.Framework.Input
         /// Updates the component, turning XNA's polling model into an event-based model, raising
         /// events as they happen.
         /// </summary>
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             var current = Keyboard.GetState();
             
+
             // Key pressed and initial key typed events for all keys.
             if (!current.IsKeyDown(Keys.LeftAlt)
                 && !current.IsKeyDown(Keys.RightAlt)) 
@@ -57,12 +51,13 @@ namespace Microsoft.Xna.Framework.Input
 
                     OnKeyPressed(this, args);
 
-                    var character = KeyboardUtil.ToChar(key, args.Modifiers);
-                    if (character.HasValue) {
-                        OnKeyTyped(this, new KeyboardCharacterEventArgs(character.Value));
-                    }
+                    // Maintain the state of last key pressed.
+                    _lastKey = key;
+                    _lastPress = gameTime.TotalGameTime;
+                    _isInitial = true;
                 }
             }
+
 
             // Key released events for all keys.
             foreach (var key in 
@@ -73,19 +68,21 @@ namespace Microsoft.Xna.Framework.Input
                 OnKeyReleased(this, new KeyboardKeyEventArgs(key));
             }
 
-            _previous = current;
-        }
 
-        /// <summary>
-        /// Raises the CharacterTyped event. This is done automatically by a correctly configured component,
-        /// but this is exposed publicly to allow programmatic key typed events to occur.
-        /// </summary>
-        private void OnKeyTyped(object sender, KeyboardCharacterEventArgs args)
-        {
-            if (CharacterTyped != null)
+            // Handle keys being held down and getting multiple KeyTyped events in sequence.
+            var elapsedTime = (gameTime.TotalGameTime - _lastPress).TotalMilliseconds;
+
+            if (current.IsKeyDown(_lastKey) && 
+                ((_isInitial && elapsedTime > InitialDelay) ||
+                (!_isInitial && elapsedTime > RepeatDelay)))
             {
-                CharacterTyped(sender, args);
+                OnKeyPressed(this, new KeyboardKeyEventArgs(_lastKey));
+                
+                _lastPress = gameTime.TotalGameTime;
+                _isInitial = false;
             }
+
+            _previous = current;
         }
 
         /// <summary>
@@ -97,6 +94,14 @@ namespace Microsoft.Xna.Framework.Input
             if (KeyPressed != null) 
             {
                 KeyPressed(sender, args);
+            }
+
+            if (CharacterTyped != null) 
+            {
+                var character = KeyboardUtil.ToChar(args.Key, args.Modifiers);
+                if (character.HasValue) {
+                    CharacterTyped(this, new KeyboardCharacterEventArgs(character.Value));
+                }
             }
         }
 
