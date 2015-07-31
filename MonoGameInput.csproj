@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input.cs" />
+    <Compile Include="MonoGameInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shared\EventArgs\KeyboardCharacterEventArgs.cs" />
     <Compile Include="Shared\EventArgs\KeyboardKeyEventArgs.cs" />
@@ -55,7 +56,6 @@
     <Compile Include="Shared\Keyboard\KeyboardUtil.cs" />
     <Compile Include="Shared\Keyboard\Modifiers.cs" />
     <Compile Include="Shared\Mouse\MouseButton.cs" />
-    <Compile Include="SiInput.cs" />
     <Compile Include="MonoGame.Input\EventArgs\MonoGameMouseEventArgs.cs" />
     <Compile Include="MonoGame.Input\Keyboard\MonoGameMouseEvents.cs" />
     <Compile Include="MonoGame.Input\Mouse\MonoGameMouseEvents.cs" />

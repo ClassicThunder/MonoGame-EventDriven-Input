@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CTInput
 {
-    public sealed class SiInput : Input
+    public sealed class MonoGameInput : Input
     {
         private readonly MonoGameMouseEvents _mouseEvents;
         private readonly MonoGameKeyboardEvents _monoGameKeyboardEvents;
 
-        public SiInput(Game game, int? doubleClickMaxTimeDelta = null,
+        public MonoGameInput(Game game, int? doubleClickMaxTimeDelta = null,
             int? doubleClickMaxMovementDelta = null) : base(game)
         {
             if (doubleClickMaxTimeDelta == null) 
