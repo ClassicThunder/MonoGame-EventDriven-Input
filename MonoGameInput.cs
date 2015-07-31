@@ -6,26 +6,33 @@ namespace CTInput
 {
     public sealed class SiInput : Input
     {
-        private readonly SiMouseEvents _mouseEvents;
-        private readonly SiKeyboardEvents _siKeyboardEvents;
+        private readonly MonoGameMouseEvents _mouseEvents;
+        private readonly MonoGameKeyboardEvents _monoGameKeyboardEvents;
 
-        public SiInput(Game game) : base(game)
+        public SiInput(Game game, int? doubleClickMaxTimeDelta = null,
+            int? doubleClickMaxMovementDelta = null) : base(game)
         {
-            _mouseEvents = new SiMouseEvents();
-            _siKeyboardEvents = new SiKeyboardEvents();
+            if (doubleClickMaxTimeDelta == null) 
+            {
+                doubleClickMaxTimeDelta = 500; //Windows default
+            }
+
+            if (doubleClickMaxMovementDelta == null) 
+            {
+                doubleClickMaxMovementDelta = 2; //Windows default
+            }
+
+            _mouseEvents = new MonoGameMouseEvents(
+                doubleClickMaxTimeDelta.Value,
+                doubleClickMaxTimeDelta.Value);
+
+            _monoGameKeyboardEvents = new MonoGameKeyboardEvents();
         }
 
         override public void Update(GameTime gameTime) 
         {
-            var location = new Point(
-                Mouse.GetState().X + Game.Window.ClientBounds.X, 
-                Mouse.GetState().Y + Game.Window.ClientBounds.Y);
-            if (Game.Window.ClientBounds.Contains(location)) 
-            {
-                _mouseEvents.Update(gameTime);
-            }
-
-            _siKeyboardEvents.Update(gameTime);
+            _mouseEvents.Update(gameTime);
+            _monoGameKeyboardEvents.Update(gameTime);
         }
 
 
@@ -35,20 +42,20 @@ namespace CTInput
 
         public override event EventHandler<KeyboardCharacterEventArgs> CharacterTyped
         {
-            add { _siKeyboardEvents.CharacterTyped += value; }
-            remove { _siKeyboardEvents.CharacterTyped -= value; }
+            add { _monoGameKeyboardEvents.CharacterTyped += value; }
+            remove { _monoGameKeyboardEvents.CharacterTyped -= value; }
         }
 
         public override event EventHandler<KeyboardKeyEventArgs> KeyDown
         {
-            add { _siKeyboardEvents.KeyPressed += value; }
-            remove { _siKeyboardEvents.KeyPressed -= value; }
+            add { _monoGameKeyboardEvents.KeyPressed += value; }
+            remove { _monoGameKeyboardEvents.KeyPressed -= value; }
         }
 
         public override event EventHandler<KeyboardKeyEventArgs> KeyUp
         {
-            add { _siKeyboardEvents.KeyReleased += value; }
-            remove { _siKeyboardEvents.KeyReleased -= value; }
+            add { _monoGameKeyboardEvents.KeyReleased += value; }
+            remove { _monoGameKeyboardEvents.KeyReleased -= value; }
         }
 
 
