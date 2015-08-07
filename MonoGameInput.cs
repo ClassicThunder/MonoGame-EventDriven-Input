@@ -8,6 +8,7 @@ namespace CTInput
     {
         private readonly MonoGameMouseEvents _mouseEvents;
         private readonly MonoGameKeyboardEvents _monoGameKeyboardEvents;
+		private readonly MonoGameTouchEvents _monoGameTouchEvents;
 
         public MonoGameInput(Game game, int? doubleClickMaxTimeDelta = null,
             int? doubleClickMaxMovementDelta = null) : base(game)
@@ -27,12 +28,15 @@ namespace CTInput
                 doubleClickMaxTimeDelta.Value);
 
             _monoGameKeyboardEvents = new MonoGameKeyboardEvents();
+
+			_monoGameTouchEvents = new MonoGameTouchEvents();
         }
 
         override public void Update(GameTime gameTime) 
         {
             _mouseEvents.Update(gameTime);
             _monoGameKeyboardEvents.Update(gameTime);
+			_monoGameTouchEvents.Update(gameTime);
         }
 
 
@@ -95,5 +99,33 @@ namespace CTInput
             add { _mouseEvents.MouseWheelMoved += value; }
             remove { _mouseEvents.MouseWheelMoved -= value; }
         }
+
+		/*####################################################################*/
+		/*                            Touch Events                            */
+		/*####################################################################*/
+
+		public override event EventHandler<TouchEventArgs> TouchBegan
+		{
+			add { _monoGameTouchEvents.TouchBegan += value; }
+			remove { _monoGameTouchEvents.TouchBegan -= value; }
+		}
+
+		public override event EventHandler<TouchEventArgs> TouchMoved
+		{
+			add { _monoGameTouchEvents.TouchMoved += value; }
+			remove { _monoGameTouchEvents.TouchMoved -= value; }
+		}
+
+		public override event EventHandler<TouchEventArgs> TouchEnded
+		{
+			add { _monoGameTouchEvents.TouchEnded += value; }
+			remove { _monoGameTouchEvents.TouchEnded -= value; }
+		}
+
+		public override event EventHandler<TouchEventArgs> TouchCancelled
+		{
+			add { _monoGameTouchEvents.TouchCancelled += value; }
+			remove { _monoGameTouchEvents.TouchCancelled -= value; }
+		}
     }
 }

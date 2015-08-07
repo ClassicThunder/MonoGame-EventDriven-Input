@@ -39,5 +39,14 @@ namespace CTInput
         public abstract event EventHandler<MouseEventArgs> MouseUp;
 
         public abstract event EventHandler<MouseEventArgs> MouseWheel;
+
+		/*####################################################################*/
+		/*                            Touch Events                            */
+		/*####################################################################*/
+
+		public abstract event EventHandler<TouchEventArgs> TouchBegan;
+		public abstract event EventHandler<TouchEventArgs> TouchMoved;
+		public abstract event EventHandler<TouchEventArgs> TouchEnded;
+		public abstract event EventHandler<TouchEventArgs> TouchCancelled;
     }
 }

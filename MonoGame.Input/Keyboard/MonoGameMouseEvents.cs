@@ -45,8 +45,7 @@ namespace Microsoft.Xna.Framework.Input
                     _isInitial = true;
                 }
             }
-
-
+				
             foreach (var key in 
                 Enum.GetValues(typeof(Keys))
                 .Cast<Keys>()

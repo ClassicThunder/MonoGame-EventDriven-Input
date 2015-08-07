@@ -4,7 +4,6 @@ namespace Microsoft.Xna.Framework.Input
 {
     public class KeyboardKeyEventArgs : EventArgs
     {
-        //Key
         public Keys Key { get; private set; }
         public Modifiers Modifiers { get; private set; }
 

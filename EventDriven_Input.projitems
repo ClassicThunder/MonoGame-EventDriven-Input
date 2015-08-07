@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{BBE2021D-83A3-4C12-984C-C67449B20558}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>blabla</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Input.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MonoGameInput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\EventArgs\KeyboardCharacterEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\EventArgs\KeyboardKeyEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\EventArgs\MouseEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\Keyboard\KeyboardUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\Keyboard\Modifiers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\Mouse\MouseButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MonoGame.Input\EventArgs\MonoGameMouseEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MonoGame.Input\Keyboard\MonoGameMouseEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MonoGame.Input\Mouse\MonoGameMouseEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MonoGame.Input\Touch\MonoGameTouchEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\EventArgs\TouchEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)packages.config" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Shared\" />
+    <Folder Include="$(MSBuildThisFileDirectory)MonoGame.Input\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Shared\Touch\" />
+    <Folder Include="$(MSBuildThisFileDirectory)MonoGame.Input\Touch\" />
+  </ItemGroup>
+</Project>
