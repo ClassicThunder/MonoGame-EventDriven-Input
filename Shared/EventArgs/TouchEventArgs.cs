@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace Microsoft.Xna.Framework.Input
 {
-	public class TouchEventArgs
-	{
+	public class TouchEventArgs : EventArgs
+    {
 		public TouchLocation TouchLocation { get; private set; }
 
 		internal TouchEventArgs (TouchLocation touchLocation)

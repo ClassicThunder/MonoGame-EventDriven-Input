@@ -1,8 +1,5 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
-using System.Collections.Concurrent;
 
 namespace Microsoft.Xna.Framework.Input
 {

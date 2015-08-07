@@ -2,7 +2,6 @@
 
 namespace Microsoft.Xna.Framework.Input
 {
-
     [Flags]
     public enum Modifiers 
     {
