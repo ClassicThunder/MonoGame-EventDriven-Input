@@ -41,4 +41,5 @@ public abstract event EventHandler<TouchEventArgs> TouchCancelled;
 
  - Move the project into [MonoGame.Extended](https://github.com/craftworkgames/MonoGame.Extended).
  - Add support for subscribing event classes to provide an abstraction over the event subscription.
+ - Test against FNA and XNA
 
