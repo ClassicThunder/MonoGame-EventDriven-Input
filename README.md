@@ -18,25 +18,27 @@ _eventDrivenInput.KeyDown += (sender, keyDown) =>
 };
 ```
 
-Below are the currently available events. In the future I intend to add touch event to support the mobile platforms. 
+Below are the currently available events.
 
 ```C#
 public abstract event EventHandler<KeyboardCharacterEventArgs> CharacterTyped;
-
 public abstract event EventHandler<KeyboardKeyEventArgs> KeyDown;
 public abstract event EventHandler<KeyboardKeyEventArgs> KeyUp;
         
 public abstract event EventHandler<MouseEventArgs> MouseMoved;
 public abstract event EventHandler<MouseEventArgs> MouseDoubleClick;
-
 public abstract event EventHandler<MouseEventArgs> MouseDown;
 public abstract event EventHandler<MouseEventArgs> MouseUp;
-
 public abstract event EventHandler<MouseEventArgs> MouseWheel;
+
+public abstract event EventHandler<TouchEventArgs> TouchBegan;
+public abstract event EventHandler<TouchEventArgs> TouchMoved;
+public abstract event EventHandler<TouchEventArgs> TouchEnded;
+public abstract event EventHandler<TouchEventArgs> TouchCancelled;
 ```
 
 ## Roadmap
 
- - Add support for touch events.
- - Moved the project into [MonoGame.Extended](https://github.com/craftworkgames/MonoGame.Extended).
+ - Move the project into [MonoGame.Extended](https://github.com/craftworkgames/MonoGame.Extended).
+ - Add support for subscribing event classes to provide an abstraction over the event subscription.
 
